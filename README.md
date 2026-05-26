@@ -83,3 +83,4 @@ Este proyecto valida de forma tangible las siguientes competencias clave valorad
 2. **Integración Híbrida**: Habilidad para acoplar QNodes de PennyLane como capas integrables dentro de arquitecturas complejas de Deep Learning en **PyTorch**.
 3. **Optimización NISQ**: Conocimiento práctico de los desafíos de hardware NISQ como el decaimiento de gradiente (*barren plateaus*) y reducción del coste de compuertas mediante ansätze específicos (como Cfsim fermiónico).
 4. **Desarrollo de Software Industrial**: Capacidad de construir APIs de baja latencia utilizando FastAPI, estructurar códigos orientados a objetos en Python, y crear visualizadores gráficos fluidos con canvas y SVGs.
+
