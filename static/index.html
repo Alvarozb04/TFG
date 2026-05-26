@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álvaro Zapata - Quantum Engineering & Physics Portfolio</title>
+    <meta name="description" content="Professional portfolio of Álvaro Zapata Beteta, Physics graduate specializing in Quantum Computing, molecular simulations (Glycine TFG), and QML.">
+    <!-- Google Fonts: Space Grotesk, Outfit and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Cyberpunk Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #070913;
+            --bg-panel: rgba(13, 17, 33, 0.65);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.25);
+            
+            --purple: #8b5cf6;
+            --purple-glow: rgba(139, 92, 246, 0.3);
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.3);
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.2);
+            --orange: #f59e0b;
+            --orange-glow: rgba(245, 158, 11, 0.2);
+            --red: #ef4444;
+            
+            --text-white: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dark: #64748b;
+            
+            --font-title: 'Space Grotesk', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Glowing background orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.35;
+            pointer-events: none;
+            animation: floatOrb 25s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+            top: -100px;
+            left: -150px;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 70%);
+            bottom: 10%;
+            right: -150px;
+            animation-delay: -7s;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 80px) scale(1.1); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 3rem 2rem;
+        }
+
+        /* =====================================================================
+           HEADER & NAVIGATION (PORTFOLIO | CONTACT)
+           ===================================================================== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+            position: sticky;
+            top: 0;
+            background: rgba(7, 9, 19, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--cyan);
+            filter: drop-shadow(0 0 8px var(--cyan-glow));
+        }
+
+        .logo h1 {
+            font-family: var(--font-title);
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo h1 span {
+            display: block;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: var(--font-heading);
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-item:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 8px var(--cyan-glow);
+        }
+
+        /* =====================================================================
+           CV GRID (LEFT: PERSONAL INFO | RIGHT: EDUCATION & EXPERIENCE)
+           ===================================================================== */
+        .cv-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .cv-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .glass-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.2rem;
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.35);
+            transition: var(--transition-smooth);
+        }
+
+        .glass-panel:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 16px 45px 0 rgba(0, 0, 0, 0.45);
+        }
+
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--cyan) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2rem;
+            color: #fff;
+            box-shadow: 0 0 20px var(--purple-glow);
+        }
+
+        .profile-title h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .profile-title p {
+            font-size: 0.85rem;
+            color: var(--cyan);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+        }
+
+        .bio-text {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .skills-section h4 {
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-white);
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.4rem;
+        }
+
+        .skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.72rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.35rem 0.7rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+        }
+
+        .tag:hover {
+            color: var(--cyan);
+            border-color: rgba(6, 182, 212, 0.3);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .contact-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .contact-info i {
+            color: var(--cyan);
+            width: 18px;
+        }
+
+        /* Timeline and achievements styling */
+        .timeline-section h3 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 2px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--purple);
+            border: 2px solid var(--bg-dark);
+            box-shadow: 0 0 8px var(--purple-glow);
+        }
+
+        .timeline-dot.active {
+            background-color: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.4rem;
+        }
+
+        .timeline-title h4 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-white);
+        }
+
+        .timeline-title p.company {
+            font-size: 0.88rem;
+            color: var(--cyan);
+            font-weight: 500;
+        }
+
+        .timeline-date {
+            font-family: var(--font-title);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 3px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        .timeline-desc ul {
+            list-style-type: none;
+            margin-top: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .timeline-desc li {
+            position: relative;
+            padding-left: 0.8rem;
+        }
+
+        .timeline-desc li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--purple);
+        }
+
+        /* =====================================================================
+           PROJECTS SHOWCASE SECTION (BELOW CV GRID)
+           ===================================================================== */
+        .section-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-title);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2.2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 990px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .project-card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.35);
+            transition: var(--transition-smooth);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cyan) 0%, var(--purple) 100%);
+        }
+
+        .project-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-5px);
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-badge {
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            color: #a5f3fc;
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .project-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+
+        .project-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .project-desc strong {
+            color: var(--cyan);
+        }
+
+        .project-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.4rem;
+            border-radius: 10px;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-link.primary {
+            background: linear-gradient(135deg, var(--purple) 0%, #6366f1 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px var(--purple-glow);
+        }
+
+        .btn-link.primary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+            box-shadow: 0 6px 20px var(--purple-glow);
+        }
+
+        .btn-link.secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: #fff;
+        }
+
+        .btn-link.secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Placeholders for future projects */
+        .placeholders-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .placeholder-card {
+            background: rgba(13, 17, 33, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            opacity: 0.6;
+            transition: var(--transition-smooth);
+        }
+
+        .placeholder-card:hover {
+            opacity: 0.85;
+            border-color: var(--border-color);
+            background: rgba(13, 17, 33, 0.45);
+        }
+
+        .placeholder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .placeholder-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 100px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .placeholder-card h4 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .placeholder-card p {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        /* =====================================================================
+           FOOTER
+           ===================================================================== */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .uax-logo {
+            font-family: var(--font-title);
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+    </style>
+</head>
+<body id="home" class="dark-theme">
+    <!-- Sleek Ambient Background Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        
+        <!-- HEADER & NAVIGATION -->
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-atom logo-icon"></i>
+                <div>
+                    <h1>Álvaro Zapata</h1>
+                    <span>Quantum Computing & Physics • UAX</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#home" class="nav-item"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="#projects" class="nav-item"><i class="fa-solid fa-diagram-project"></i> Projects</a>
+                <a href="#profile" class="nav-item"><i class="fa-solid fa-envelope"></i> Contact</a>
+            </nav>
+        </header>
+
+        <!-- ================= CV GRID (AT THE VERY TOP) ================= -->
+        <section class="cv-grid" id="profile">
+            
+            <!-- Left Side: Personal Info & Details -->
+            <div class="glass-panel profile-card">
+                <div class="profile-avatar"><i class="fa-solid fa-user-graduate"></i></div>
+                <div class="profile-title">
+                    <h3>Álvaro Zapata Beteta</h3>
+                    <p>Physics & Quantum Specialist</p>
+                </div>
+                <p class="bio-text">
+                    Physics and Data Analytics student specializing in Quantum Physics and Quantum Computing (QC), currently developing my Bachelor's Thesis on QC. Strong analytical skills and a results-oriented mindset. Proven experience in leading university communities and managing groups. Passionate about solving complex problems, seeking to contribute programming skills (Python, SQL) and a proactive work ethic to technological innovation environments.
+                </p>
+                
+                <div class="skills-section">
+                    <h4><i class="fa-solid fa-code"></i> Systems & Tools</h4>
+                    <div class="skills-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Qiskit</span>
+                        <span class="tag">R</span>
+                        <span class="tag">SQL</span>
+                        <span class="tag">LaTeX</span>
+                        <span class="tag">Power BI</span>
+                        <span class="tag">Zemax OpticStudio</span>
+                        <span class="tag">PennyLane</span>
+                        <span class="tag">Advanced Excel</span>
+                    </div>
+                </div>
+
+                <div class="skills-section">
+                    <h4><i class="fa-solid fa-brain"></i> Core Competencies</h4>
+                    <div class="skills-tags">
+                        <span class="tag">Team Leadership</span>
+                        <span class="tag">Technical Communication</span>
+                        <span class="tag">Data Analysis</span>
+                        <span class="tag">Team Management</span>
+                        <span class="tag">Continuous Improvement</span>
+                    </div>
+                </div>
+
+                <div class="skills-section">
+                    <h4><i class="fa-solid fa-globe"></i> Languages</h4>
+                    <p class="bio-text" style="font-size: 0.8rem;">
+                        <strong>English:</strong> Advanced (C1)<br>
+                        <strong>Spanish:</strong> Native
+                    </p>
+                </div>
+
+                <div class="contact-info" id="profile-contact">
+                    <h4><i class="fa-solid fa-address-book"></i> Contact Details</h4>
+                    <p><i class="fa-solid fa-envelope"></i> alvarozapatabeteta1@gmail.com</p>
+                    <p><i class="fa-solid fa-phone"></i> +34 653 98 89 79</p>
+                    <p><i class="fa-solid fa-location-dot"></i> Madrid, Spain</p>
+                </div>
+            </div>
+
+            <!-- Right Side: Timeline (Education, Experience & Courses) -->
+            <div class="glass-panel timeline-section">
+                <h3><i class="fa-solid fa-briefcase"></i> Experience & Education</h3>
+                <div class="timeline">
+                    
+                    <!-- OPTICAL ENGINEERING INTERN -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot active"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <h4>Optical Engineering Intern</h4>
+                                <p class="company">Visual Road</p>
+                            </div>
+                            <span class="timeline-date">2026 - Present</span>
+                        </div>
+                        <div class="timeline-desc">
+                            <ul>
+                                <li>Researched and developed windshield projection methods (HUDs) applied to the automotive industry.</li>
+                                <li>Developed hands-on knowledge in standard optical design software, acquiring extensive experience in the use of <strong>Zemax OpticStudio (Ansys)</strong>.</li>
+                                <li>Communicated effectively across various projects and cross-functional teams, expanding technical workflows from materials science to physical optics.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- UAX CHESS CLUB CO-FOUNDER -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <h4>Co-founder & Community Manager</h4>
+                                <p class="company">UAX Chess Club</p>
+                            </div>
+                            <span class="timeline-date">2022 - Present</span>
+                        </div>
+                        <div class="timeline-desc">
+                            <ul>
+                                <li>Co-founded and structured the first official chess club at Universidad Alfonso X el Sabio from scratch, generating an active student community.</li>
+                                <li>Organized tournaments and academic events, managing logistics and promotion to sustain robust student participation.</li>
+                                <li>Managed club budgets and optimized resources for equipment purchases and official tournaments.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- BACHELOR IN PHYSICS -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot active"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <h4>Bachelor's Degree in Physics</h4>
+                                <p class="company">Universidad Alfonso X el Sabio (UAX)</p>
+                            </div>
+                            <span class="timeline-date">Graduation 2026</span>
+                        </div>
+                        <div class="timeline-desc">
+                            <p>Specialized in Quantum Physics and Quantum Computing. Graduation Thesis (TFG) developed on the electronic structure simulation of glycine using spin symmetry-conserving methods.</p>
+                            <p style="margin-top: 0.4rem; font-weight: 500;"><i class="fa-solid fa-people-group"></i> Class Representative (Liaison between students and the faculty of sciences).</p>
+                        </div>
+                    </div>
+
+                    <!-- CERTIFICATIONS -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <h4>Certifications & Highlighted Courses</h4>
+                                <p class="company">Avanade & Ironhack</p>
+                            </div>
+                            <span class="timeline-date">2024 - 2025</span>
+                        </div>
+                        <div class="timeline-desc">
+                            <ul>
+                                <li><strong>UAX-Avanade Innovation School</strong> (Avanade, 2025).</li>
+                                <li><strong>UAX Fundamentals of Data Analytics</strong> (Ironhack-UAX, 2024).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= PROJECTS SHOWCASE SECTION (BELOW CV GRID) ================= -->
+        <section class="section-header" id="projects">
+            <h2><i class="fa-solid fa-folder-open"></i> Research Projects</h2>
+        </section>
+
+        <div class="projects-grid">
+            
+            <!-- ACTIVE TFG GLYCINE PROJECT CARD -->
+            <section class="project-card">
+                <div>
+                    <div class="project-meta">
+                        <span class="project-badge">Bachelor's Thesis (TFG)</span>
+                        <span class="timeline-date"><i class="fa-solid fa-circle-check" style="color: var(--green);"></i> Active / Completed</span>
+                    </div>
+                    <h3>Quantum Digital Twin of Glycine</h3>
+                    <p class="project-desc">
+                        Development of a three-dimensional quantum digital twin of the glycine molecule (C₂H₅NO₂) simulated under Variational Quantum Eigensolver (**VQE** - Variational Quantum Eigensolver) algorithms. The model simulates a **CAS(10,10)** active space in **20 qubits** utilizing the fermionic-inspired **cfSim** (Current Fermionic Simulation) ansatz.
+                        The project validates how cfSim's physical constraints on particle number conservation and spin parity prevent Hartree-Fock energy disruptions associated with classical noise gates (standard CNOTs in Hardware Efficient Ansatzes), achieving optimal convergence stability on noisy NISQ architectures of IBM Quantum.
+                    </p>
+                </div>
+                
+                <div class="project-buttons">
+                    <a href="glicina_interactiva.html" target="_blank" class="btn-link primary">
+                        <i class="fa-solid fa-cube"></i> Launch 3D Visualizer →
+                    </a>
+                    <a href="Para_Profesor/README_PROFESOR.md" target="_blank" class="btn-link secondary">
+                        <i class="fa-solid fa-circle-info"></i> Evaluator Guide
+                    </a>
+                </div>
+            </section>
+
+            <!-- SLOTS / PLACEHOLDERS FOR FUTURE PROJECTS -->
+            <div class="placeholders-column">
+                
+                <!-- PLACEHOLDER VQC -->
+                <div class="placeholder-card">
+                    <div class="placeholder-header">
+                        <h4>Variational Quantum Classifier (VQC)</h4>
+                        <span class="placeholder-badge">Coming Soon</span>
+                    </div>
+                    <p>
+                        Hybrid algorithm for classifying non-linear geometric datasets (Circles and Moons). Utilizes quantum feature maps in PennyLane optimized with classical networks.
+                    </p>
+                </div>
+
+                <!-- PLACEHOLDER QSVM -->
+                <div class="placeholder-card">
+                    <div class="placeholder-header">
+                        <h4>Quantum Support Vector Machine (QSVM)</h4>
+                        <span class="placeholder-badge">Coming Soon</span>
+                    </div>
+                    <p>
+                        Classification based on quantum wavefunction overlap kernels in multivariate Hilbert spaces, bypassing classical linear separability bottlenecks.
+                    </p>
+                </div>
+
+                <!-- PLACEHOLDER QCNN -->
+                <div class="placeholder-card">
+                    <div class="placeholder-header">
+                        <h4>Quantum Convolutional Neural Network (QCNN)</h4>
+                        <span class="placeholder-badge">Coming Soon</span>
+                    </div>
+                    <p>
+                        Quantum convolutional architecture to classify simplified 4x4 molecular images, employing parameterized convolution and quantum pooling layers.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="uax-logo">UNIVERSIDAD ALFONSO X EL SABIO (UAX)</div>
+        <p>Portfolio and Glycine Digital Twin designed by Álvaro Zapata Beteta.</p>
+        <p style="font-size: 0.7rem; margin-top: 8px; opacity: 0.3;">
+            Developed under principles of quantum scientific computing and molecular symmetries • 2026.
+        </p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "mode": "Simulador Cl\u00e1sico Local de Alta Precisi\u00f3n (Statevector)",
+  "e_core": -258.3179,
+  "results": {
+    "cfsim_hf_active": -24.628882525396445,
+    "cfsim_hf_total": -282.94678252539643,
+    "cfsim_perturbed_active": -24.624331576691883,
+    "cfsim_perturbed_total": -282.9422315766919,
+    "normal_hf_active": -19.80520631647747,
+    "normal_hf_total": -278.1231063164775,
+    "normal_perturbed_active": -19.784548839393832,
+    "normal_perturbed_total": -278.10244883939384
+  }
+}

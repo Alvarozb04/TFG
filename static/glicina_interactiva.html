@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemelo Digital Cuántico: Espacio Activo de la Glicina</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(13, 17, 23, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            
+            --color-homo: #00f0ff;
+            --color-lumo: #ff007f;
+            --color-sigma: #8b949e;
+            --color-success: #2ea44f;
+            --color-accent: #8a2be2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #webgl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* UI Overlay */
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            grid-template-rows: 55px 1fr 45px;
+            padding: 16px;
+            gap: 16px;
+        }
+
+        .ui-element {
+            pointer-events: auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            box-shadow: 0 6px 24px 0 rgba(0, 0, 0, 0.45);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .ui-element:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* HEADER */
+        header {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, var(--color-homo), var(--color-lumo));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #000;
+            font-family: 'Space Grotesk', sans-serif;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, #8b949e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge-cas {
+            background: rgba(138, 43, 226, 0.2);
+            border: 1px solid rgba(138, 43, 226, 0.4);
+            color: #d8b4fe;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            grid-column: 1;
+            grid-row: 2;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 12px;
+            overflow-y: auto;
+            max-height: calc(100vh - 132px);
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: var(--card-border);
+        }
+
+        /* CONTROL TABS / BUTTONS */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn.active {
+            background: rgba(0, 240, 255, 0.08);
+            border-color: var(--color-homo);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+        }
+
+        .btn.active .btn-indicator {
+            background-color: var(--color-homo);
+            box-shadow: 0 0 6px var(--color-homo);
+        }
+
+        .btn-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        /* SLIDERS */
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.01);
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .slider-header span.value {
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 500;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-homo);
+            box-shadow: 0 0 6px var(--color-homo);
+            transition: transform 0.1s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+        }
+
+        /* ACTION BUTTON (EXCITATION) */
+        .btn-action {
+            margin-top: 4px;
+            background: linear-gradient(135deg, #8a2be2, #ff007f);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 18px rgba(255, 0, 127, 0.5);
+            background: linear-gradient(135deg, #9b42f5, #ff1a8c);
+        }
+
+        .btn-action:active {
+            transform: translateY(1px);
+        }
+
+        .btn-action svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* TEXT CARDS */
+        .info-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: var(--text-secondary);
+        }
+
+        .info-card strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* QUANTUM TICKER */
+        .ticker {
+            grid-column: 2;
+            grid-row: 1;
+            justify-self: end;
+            align-self: center;
+            display: flex;
+            gap: 16px;
+        }
+
+        .ticker-item {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid var(--card-border);
+            padding: 10px 16px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 100px;
+        }
+
+        .ticker-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+
+        .ticker-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-homo);
+        }
+
+        /* FOOTER / EXPLANATION PANEL */
+        .info-footer {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .color-legend {
+            display: flex;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* RIGHT PANEL FOR QUANTUM CIRCUIT */
+        .right-panel {
+            position: absolute;
+            top: 87px;
+            right: 16px;
+            width: 340px;
+            height: calc(100vh - 148px);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 12px;
+            overflow-y: auto;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        @media (max-width: 900px) {
+            .right-panel {
+                position: static;
+                width: 100%;
+                max-height: none;
+                grid-row: 3;
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* Tooltip style */
+        .tooltip {
+            position: absolute;
+            background: rgba(13, 17, 23, 0.9);
+            border: 1px solid var(--card-border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* Interactive active space dim layer overlay */
+        .dimmer-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            transition: background-color 0.8s ease;
+        }
+
+        .dimmed {
+            background-color: rgba(13, 17, 23, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .ui-overlay {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+                padding: 12px;
+                gap: 12px;
+                overflow-y: auto;
+            }
+            .sidebar {
+                grid-row: 2;
+                max-height: none;
+            }
+            .ticker {
+                display: none;
+            }
+        }
+    </style>
+
+    <!-- Three.js & OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- GSAP for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+    <div id="webgl-container"></div>
+    <div id="dimmer" class="dimmer-overlay"></div>
+    
+    <div class="tooltip" id="molecule-tooltip"></div>
+
+    <div class="ui-overlay">
+        <!-- HEADER -->
+        <header class="ui-element">
+            <div class="logo-area">
+                <div class="logo-icon">Q</div>
+                <div>
+                    <h1>Active Space Visualizer (TFG)</h1>
+                    <p style="font-size: 11px; color: var(--text-secondary);">Glycine (C₂H₅NO₂) - VQE Simulation</p>
+                </div>
+            </div>
+            <div class="badge-cas">Active Space CAS(10,10)</div>
+        </header>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar ui-element">
+            <!-- MAIN CONTROLS PANEL -->
+            <div id="main-panel-controls" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <div class="control-group">
+                    <div class="section-title">Visualization Modes</div>
+                    <button class="btn active" id="btn-standard" onclick="setVisualMode('standard')">
+                        Full Chemical View
+                        <div class="btn-indicator"></div>
+                    </button>
+                    <button class="btn" id="btn-active-space" onclick="setVisualMode('active')">
+                        Active Space CAS(10,10)
+                        <div class="btn-indicator"></div>
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <div class="section-title">Orbital Controls</div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>HOMO Opacity (N Lone Pair)</span>
+                            <span class="value" id="val-homo" style="color: var(--color-homo);">40%</span>
+                        </div>
+                        <input type="range" id="slide-homo" min="0" max="100" value="40" oninput="updateOrbitalOpacity('homo', this.value)">
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>LUMO Opacity (C=O π*)</span>
+                            <span class="value" id="val-lumo" style="color: var(--color-lumo);">40%</span>
+                        </div>
+                        <input type="range" id="slide-lumo" min="0" max="100" value="40" oninput="updateOrbitalOpacity('lumo', this.value)">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>Camera Rotation</span>
+                            <span class="value" id="val-rotate">Auto</span>
+                        </div>
+                        <input type="range" id="slide-rotate" min="0" max="100" value="15" oninput="updateRotationSpeed(this.value)">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="section-title">Quantum Space Explanation</div>
+                    <div class="info-card" id="info-text">
+                        <strong>Standard Molecular Model</strong>
+                        Shows all chemical bonds of glycine. The C (grey), O (red), N (blue), and H (white) atoms are classically simulated in the Hartree-Fock mean field.
+                    </div>
+                </div>
+
+                <!-- ACTION EXCITATION BUTTON -->
+                <button class="btn-action" id="btn-excite" onclick="triggerExcitation()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 11.5c.83 0 1.5-.67 1.5-1.5S19.83 8.5 19 8.5s-1.5.67-1.5 1.5.67 1.5 1.5 1.5M12.5 17c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5M19 16c.83 0 1.5-.67 1.5-1.5S19.83 13 19 13s-1.5.67-1.5 1.5.67 1.5 1.5 1.5M12.5 10c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5m-6.3-2.9L3.5 12h5.6L3.5 21l9.8-10.5H7.7L12 3H6.2z"/>
+                    </svg>
+                    SIMULATE ELECTRON HOP
+                </button>
+                
+                <!-- UTILITIES COCKPIT BUTTON -->
+                <button class="btn-action" id="btn-show-utilities" onclick="toggleUtilities(true)" style="background: linear-gradient(135deg, #2ea44f, #00f0ff); box-shadow: 0 4px 15px rgba(46, 164, 79, 0.25); margin-top: 4px;">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.5 6.7.9 9.8 2.9 11.8c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.6z"/>
+                    </svg>
+                    UTILITIES COCKPIT
+                </button>
+            </div>
+
+            <!-- UTILITIES CONTROLS PANEL -->
+            <div id="utilities-panel-controls" style="display: none; flex-direction: column; gap: 12px; width: 100%;">
+                <button class="btn" onclick="toggleUtilities(false)" style="margin-bottom: 4px; font-weight: 600; display: flex; align-items: center; justify-content: flex-start; gap: 8px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    BACK TO MAIN VIEW
+                </button>
+
+                <div class="control-group">
+                    <div class="section-title">Deprotonation Dynamics</div>
+                    <div class="info-card" style="font-size: 11px; line-height: 1.45;">
+                        <strong>Glycine-Water Interaction</strong>
+                        Simulates the carboxyl O-H bond cleavage in the presence of a water molecule. The proton (H⁺) transfers to H₂O, forming a hydronium (H₃O⁺) cation and glycine carboxylate (Gly-COO⁻).
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="section-title">Quantum State Monitor (JW)</div>
+                    
+                    <div class="slider-container" style="gap: 8px; border-color: rgba(46, 164, 79, 0.15);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+                            <span style="color: var(--text-secondary);">Qubits [3, 13] (Glycine O-H)</span>
+                            <span id="qubit-3-13-state" class="badge-cas" style="background: rgba(46, 164, 79, 0.2); border: 1px solid rgba(46, 164, 79, 0.4); color: #85e89d; font-family: 'Space Grotesk', sans-serif; font-size: 9px; padding: 2px 6px;">n = 1.000</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div id="qubit-3-13-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-success); box-shadow: 0 0 8px var(--color-success); transition: all 0.3s ease;"></div>
+                            <div style="font-size: 10px; color: var(--text-secondary); flex-grow: 1;">σ_OH bonding orbital occupancy</div>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container" style="gap: 8px; border-color: rgba(255, 0, 127, 0.15);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+                            <span style="color: var(--text-secondary);">Qubits [8, 18] (Water O-H)</span>
+                            <span id="qubit-8-18-state" class="badge-cas" style="background: rgba(255, 0, 127, 0.1); border: 1px solid rgba(255, 0, 127, 0.2); color: #ff80ab; font-family: 'Space Grotesk', sans-serif; font-size: 9px; padding: 2px 6px;">n = 0.000</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div id="qubit-8-18-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #ff3b30; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 0 2px rgba(255, 59, 48, 0.4); transition: all 0.3s ease;"></div>
+                            <div style="font-size: 10px; color: var(--text-secondary); flex-grow: 1;">H₃O⁺ new bond orbital occupancy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-action" id="btn-reaction" onclick="triggerReaction()" style="background: linear-gradient(135deg, #00f0ff, #8a2be2); box-shadow: 0 4px 15px rgba(0, 240, 255, 0.25); margin-top: 4px;">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    SIMULATE PROTON TRANSFER
+                </button>
+            </div>
+        </div>
+
+        <!-- QUANTUM CIRCUIT PANEL (RIGHT SIDE) -->
+        <div id="quantum-circuit-panel" class="ui-element right-panel" style="display: none;">
+            <div class="control-group">
+                <div class="section-title">Quantum Circuit Registry</div>
+                <div class="info-card" style="font-size: 11px; line-height: 1.4;">
+                    <strong>Jordan-Wigner Mapping</strong>
+                    Under Jordan-Wigner, active-space fermionic states are mapped to spin-orbitals. The proton transfer represents an electronic state exchange.
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="section-title">Visual Qubit Hopping</div>
+                <svg id="quantum-circuit-svg" width="100%" height="210" style="background: rgba(13, 17, 23, 0.45); border-radius: 8px; border: 1px solid var(--card-border); padding: 6px;">
+                    <!-- Wires -->
+                    <text x="12" y="32" fill="var(--text-secondary)" font-size="9" font-family="'Space Grotesk', sans-serif">q[3] (α Gly-OH)</text>
+                    <line x1="90" y1="29" x2="280" y2="29" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    
+                    <text x="12" y="72" fill="var(--text-secondary)" font-size="9" font-family="'Space Grotesk', sans-serif">q[8] (α Hyd-OH)</text>
+                    <line x1="90" y1="69" x2="280" y2="69" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    
+                    <text x="12" y="122" fill="var(--text-secondary)" font-size="9" font-family="'Space Grotesk', sans-serif">q[13] (β Gly-OH)</text>
+                    <line x1="90" y1="119" x2="280" y2="119" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    
+                    <text x="12" y="162" fill="var(--text-secondary)" font-size="9" font-family="'Space Grotesk', sans-serif">q[18] (β Hyd-OH)</text>
+                    <line x1="90" y1="159" x2="280" y2="159" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    
+                    <!-- fSim gates -->
+                    <rect id="circuit-gate-alpha" x="165" y="19" width="36" height="60" rx="4" fill="rgba(255, 255, 255, 0.02)" stroke="var(--card-border)" stroke-width="1.5" style="transition: all 0.3s ease;" />
+                    <text x="183" y="53" fill="var(--text-primary)" font-size="9" font-family="'Space Grotesk', sans-serif" font-weight="600" text-anchor="middle">fSim</text>
+                    
+                    <rect id="circuit-gate-beta" x="165" y="109" width="36" height="60" rx="4" fill="rgba(255, 255, 255, 0.02)" stroke="var(--card-border)" stroke-width="1.5" style="transition: all 0.3s ease;" />
+                    <text x="183" y="143" fill="var(--text-primary)" font-size="9" font-family="'Space Grotesk', sans-serif" font-weight="600" text-anchor="middle">fSim</text>
+                    
+                    <!-- Electron Wavepackets -->
+                    <circle id="circuit-e-alpha" cx="115" cy="29" r="5" fill="#00f0ff" style="filter: drop-shadow(0 0 4px #00f0ff);" />
+                    <circle id="circuit-e-beta" cx="115" cy="119" r="5" fill="#2ea44f" style="filter: drop-shadow(0 0 4px #2ea44f);" />
+                </svg>
+            </div>
+
+            <div class="control-group">
+                <div class="section-title">Excitation Mechanics</div>
+                <div class="info-card" style="font-size: 11px; line-height: 1.45;">
+                    <strong>Fermionic Exchange (cfSim)</strong>
+                    The VQE utilizes <code>fSim</code> gates mapping the hopping terms <i>a<sub>j</sub><sup>†</sup>a<sub>i</sub></i> + <i>a<sub>i</sub><sup>†</sup>a<sub>j</sub></i> ≡ |0<sub><i>i</i></sub>1<sub><i>j</i></sub>⟩⟨1<sub><i>i</i></sub>0<sub><i>j</i></sub>| + |1<sub><i>i</i></sub>0<sub><i>j</i></sub>⟩⟨0<sub><i>i</i></sub>1<sub><i>j</i></sub>| that model physical charge transport while preserving particle number conservation. This corresponds to the qubit state transition |1<sub><i>i</i></sub>0<sub><i>j</i></sub>⟩ → |0<sub><i>i</i></sub>1<sub><i>j</i></sub>⟩.
+                </div>
+            </div>
+        </div>
+
+        <!-- TICKERS -->
+        <div class="ticker">
+            <div class="ticker-item">
+                <span class="ticker-label">Simulated Qubits</span>
+                <span class="ticker-value">20 Qubits</span>
+            </div>
+            <div class="ticker-item" style="border-color: rgba(255, 0, 127, 0.2);">
+                <span class="ticker-label">Transition</span>
+                <span class="ticker-value" id="tick-trans" style="color: var(--text-primary); font-size: 13.5px;">Ground State</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-label">Sz Conserved</span>
+                <span class="ticker-value" style="color: var(--color-success);">S_z = 0</span>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="ui-element info-footer">
+            <div class="color-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--color-homo);"></div>
+                    <span>HOMO (N Lone Pair)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--color-lumo);"></div>
+                    <span>LUMO (C=O π*)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #8b949e;"></div>
+                    <span>σ Skeleton</span>
+                </div>
+            </div>
+            <div>
+                Designed for TFG • Álvaro Zapata Beteta • Alfonso X el Sabio University (UAX)
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN DE DATOS DE LA GLICINA ---
+        // Coordenadas originales centradas
+        const atomsData = [
+            { id: 0, element: 'C',  name: 'C1 (Carbonyl)',   x: -0.0502, y: 1.3398, z: 0.6571, active: true },
+            { id: 1, element: 'O',  name: 'O1 (Oxygen C=O)', x: -0.3712, y: 1.3981, z: -0.5191, active: true },
+            { id: 2, element: 'H',  name: 'H (Hydroxyl)',    x: -0.3283, y: 3.1620, z: 0.7917, active: false },
+            { id: 3, element: 'O',  name: 'O2 (Oxygen O-H)', x: -0.0458, y: 2.4594, z: 1.4145, active: true },
+            { id: 4, element: 'C',  name: 'C2 (Alpha)',      x: 0.3240,  y: 0.0752, z: 1.4207, active: false },
+            { id: 5, element: 'H',  name: 'H (C-H Alpha)',   x: 1.0380,  y: -0.4963,z: 0.8212, active: false },
+            { id: 6, element: 'N',  name: 'N (Amino Group)', x: 0.9346,  y: 0.3724, z: 2.7328, active: true },
+            { id: 7, element: 'H',  name: 'H (C-H Alpha)',   x: -0.5838, y: -0.5148,z: 1.5742, active: false },
+            { id: 8, element: 'H',  name: 'H (N-H Amino)',   x: 1.7864,  y: 0.9117, z: 2.5705, active: false },
+            { id: 9, element: 'H',  name: 'H (N-H Amino)',   x: 0.3158,  y: 1.0328, z: 3.2111, active: false }
+        ];
+
+        // Conexiones de enlaces (pares de índices)
+        const bondsData = [
+            { from: 0, to: 1, order: 2 }, // C1 = O1
+            { from: 0, to: 3, order: 1 }, // C1 - O2
+            { from: 3, to: 2, order: 1 }, // O2 - H (hidroxilo)
+            { from: 0, to: 4, order: 1 }, // C1 - C2
+            { from: 4, to: 5, order: 1 }, // C2 - H5
+            { from: 4, to: 7, order: 1 }, // C2 - H7
+            { from: 4, to: 6, order: 1 }, // C2 - N
+            { from: 6, to: 8, order: 1 }, // N - H8
+            { from: 6, to: 9, order: 1 }  // N - H9
+        ];
+
+        // Calcular el centro de masas para centrar la molécula en la escena
+        let sumX = 0, sumY = 0, sumZ = 0;
+        atomsData.forEach(a => { sumX += a.x; sumY += a.y; sumZ += a.z; });
+        const center = { x: sumX / atomsData.length, y: sumY / atomsData.length, z: sumZ / atomsData.length };
+
+        // Ajustar coordenadas locales respecto al centro de masas
+        atomsData.forEach(a => {
+            a.x -= center.x;
+            a.y -= center.y;
+            a.z -= center.z;
+        });
+
+        // --- INICIALIZACIÓN DE LA ESCENA THREE.JS ---
+        let scene, camera, renderer, controls;
+        let atomsGroup, bondsGroup, orbitalsGroup;
+        let homoOrbital, lumoLobe1, lumoLobe2;
+        let animatedParticles = [];
+        
+        let visualMode = 'standard'; // 'standard' o 'active'
+        let autoRotateSpeed = 0.5;
+        let activeScaleFactor = 1.0;
+
+        const container = document.getElementById('webgl-container');
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0d1117, 0.04);
+
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 2, 7);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            container.appendChild(renderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 3;
+            controls.maxDistance = 15;
+            
+            // Map middle-click and right-click to panning (moving through space)
+            controls.mouseButtons = {
+                LEFT: THREE.MOUSE.ROTATE,
+                MIDDLE: THREE.MOUSE.PAN,
+                RIGHT: THREE.MOUSE.PAN
+            };
+
+            // --- ILUMINACIÓN PREMIUM ---
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            // Luz direccional clave (azulada fría)
+            const dirLight1 = new THREE.DirectionalLight(0x90b0ff, 1.2);
+            dirLight1.position.set(5, 8, 5);
+            dirLight1.castShadow = true;
+            scene.add(dirLight1);
+
+            // Luz de relleno cálida (anaranjada suave) desde el lado opuesto
+            const dirLight2 = new THREE.DirectionalLight(0xffd0a0, 0.6);
+            dirLight2.position.set(-5, -2, -5);
+            scene.add(dirLight2);
+
+            // Luz de foco puntual en el Nitrógeno (azul cian)
+            const pointLightN = new THREE.PointLight(varColorToHex('--color-homo'), 0.5, 6);
+            pointLightN.position.set(
+                atomsData[6].x,
+                atomsData[6].y,
+                atomsData[6].z
+            );
+            scene.add(pointLightN);
+
+            // Luz de foco puntual en el Carbonilo (magenta)
+            const pointLightC = new THREE.PointLight(varColorToHex('--color-lumo'), 0.5, 6);
+            pointLightC.position.set(
+                (atomsData[0].x + atomsData[1].x)/2,
+                (atomsData[0].y + atomsData[1].y)/2,
+                (atomsData[0].z + atomsData[1].z)/2
+            );
+            scene.add(pointLightC);
+
+            // --- GRUPOS DE LA ESCENA ---
+            atomsGroup = new THREE.Group();
+            bondsGroup = new THREE.Group();
+            orbitalsGroup = new THREE.Group();
+            
+            scene.add(atomsGroup);
+            scene.add(bondsGroup);
+            scene.add(orbitalsGroup);
+
+            // --- CREACIÓN DE LA MOLÉCULA ---
+            createMolecule();
+            createOrbitals();
+
+            // --- EVENTOS ---
+            window.addEventListener('resize', onWindowResize);
+            
+            // Iniciar animación loop
+            animate();
+        }
+
+        // --- PALETA DE MATERIALES ---
+        function getAtomMaterial(element, isActive) {
+            let color;
+            let roughness = 0.15;
+            let metalness = 0.1;
+            let clearcoat = 1.0;
+            
+            switch(element) {
+                case 'C':
+                    color = 0x3a424a; // Lighter gray for better visibility against dark background
+                    roughness = 0.06; // Glossy reflective finish
+                    metalness = 0.55; // Metallic reflection to catch highlights
+                    break;
+                case 'O':
+                    color = 0xff3b30; // Rojo brillante
+                    break;
+                case 'N':
+                    color = 0x007aff; // Azul cobalto
+                    break;
+                case 'H':
+                    color = 0xf0f6fc; // Blanco hielo
+                    roughness = 0.3;
+                    clearcoat = 0.5;
+                    break;
+                default:
+                    color = 0xaaaaaa;
+            }
+
+            return new THREE.MeshPhysicalMaterial({
+                color: color,
+                roughness: roughness,
+                metalness: metalness,
+                clearcoat: clearcoat,
+                clearcoatRoughness: 0.1,
+                transparent: true,
+                opacity: 1.0
+            });
+        }
+
+        const bondMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x4f5b66,
+            roughness: 0.4,
+            metalness: 0.3,
+            transparent: true,
+            opacity: 1.0
+        });
+
+        // --- CREACIÓN FÍSICA ---
+        function createMolecule() {
+            // 1. Añadir Átomos
+            atomsData.forEach(a => {
+                let size = 0.3; // Más pequeño y elegante
+                if (a.element === 'N') size = 0.35;
+                if (a.element === 'O') size = 0.32;
+                if (a.element === 'H') size = 0.18;
+
+                const geom = new THREE.SphereGeometry(size, 32, 32);
+                const mat = getAtomMaterial(a.element, a.active);
+                const mesh = new THREE.Mesh(geom, mat);
+                
+                mesh.position.set(a.x, a.y, a.z);
+                mesh.userData = { id: a.id, element: a.element, name: a.name, active: a.active, initialScale: 1.0 };
+                
+                atomsGroup.add(mesh);
+            });
+
+            // 2. Añadir Enlaces (Cilindros rotados matemáticamente)
+            bondsData.forEach(b => {
+                const p1 = new THREE.Vector3(atomsData[b.from].x, atomsData[b.from].y, atomsData[b.from].z);
+                const p2 = new THREE.Vector3(atomsData[b.to].x, atomsData[b.to].y, atomsData[b.to].z);
+                
+                const direction = new THREE.Vector3().subVectors(p2, p1);
+                const length = direction.length();
+                
+                // Determinar si el enlace conecta átomos activos para el CAS(10,10)
+                const isFromActive = atomsData[b.from].active;
+                const isToActive = atomsData[b.to].active;
+                const isActiveBond = isFromActive && isToActive;
+
+                let radius = 0.04; // Enlace más delgado para combinar con átomos refinados
+                if (b.order === 2) radius = 0.06; // Enlace doble C=O proporcional
+
+                const geom = new THREE.CylinderGeometry(radius, radius, length, 12);
+                // Alinear con la dirección del vector
+                geom.translate(0, length / 2, 0);
+                geom.rotateX(Math.PI / 2);
+
+                const mesh = new THREE.Mesh(geom, bondMaterial.clone());
+                mesh.position.copy(p1);
+                mesh.lookAt(p2);
+                
+                mesh.userData = { 
+                    from: b.from, 
+                    to: b.to, 
+                    order: b.order, 
+                    active: isActiveBond,
+                    initialOpacity: 1.0
+                };
+
+                bondsGroup.add(mesh);
+            });
+        }
+
+        function createOrbitals() {
+            // --- HOMO: Par Solitario en Nitrógeno (Átomo 6) ---
+            const nitrogen = atomsData[6];
+            const homoGeom = new THREE.SphereGeometry(0.9, 32, 32);
+            const homoMat = new THREE.MeshBasicMaterial({
+                color: varColorToHex('--color-homo'),
+                transparent: true,
+                opacity: 0.4,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            homoOrbital = new THREE.Mesh(homoGeom, homoMat);
+            homoOrbital.position.set(nitrogen.x, nitrogen.y + 0.2, nitrogen.z);
+            homoOrbital.scale.set(0.9, 1.4, 0.9); // Elipsoide apuntando hacia arriba
+            orbitalsGroup.add(homoOrbital);
+
+            // --- LUMO: Lóbulos pi* antienlazantes en el Carbonilo C1=O1 (Átomos 0 y 1) ---
+            const c1 = atomsData[0];
+            const o1 = atomsData[1];
+            
+            // Punto central del doble enlace C=O
+            const mid = new THREE.Vector3((c1.x + o1.x)/2, (c1.y + o1.y)/2, (c1.z + o1.z)/2);
+            const dir = new THREE.Vector3().subVectors(new THREE.Vector3(o1.x, o1.y, o1.z), new THREE.Vector3(c1.x, c1.y, c1.z)).normalize();
+            
+            // Vector ortogonal para separar los dos lóbulos (simulando los planos pi)
+            const normal = new THREE.Vector3(1, 0, 0).cross(dir).normalize();
+            if (normal.lengthSq() < 0.01) normal.copy(new THREE.Vector3(0, 0, 1).cross(dir).normalize());
+            
+            const offset = 0.55; // Distancia de separación de los lóbulos pi
+
+            const lumoMat = new THREE.MeshBasicMaterial({
+                color: varColorToHex('--color-lumo'),
+                transparent: true,
+                opacity: 0.4,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            // Lóbulo 1 (Arriba/Frente)
+            const lobeGeom1 = new THREE.SphereGeometry(0.65, 32, 32);
+            lumoLobe1 = new THREE.Mesh(lobeGeom1, lumoMat);
+            lumoLobe1.position.copy(mid).addScaledVector(normal, offset);
+            lumoLobe1.scale.set(1.4, 0.75, 0.75);
+            lumoLobe1.lookAt(o1.x, o1.y, o1.z);
+            orbitalsGroup.add(lumoLobe1);
+
+            // Lóbulo 2 (Abajo/Atrás - Fase opuesta, mismo color de intensidad cuántica)
+            const lobeGeom2 = new THREE.SphereGeometry(0.65, 32, 32);
+            lumoLobe2 = new THREE.Mesh(lobeGeom2, lumoMat);
+            lumoLobe2.position.copy(mid).addScaledVector(normal, -offset);
+            lumoLobe2.scale.set(1.4, 0.75, 0.75);
+            lumoLobe2.lookAt(o1.x, o1.y, o1.z);
+            orbitalsGroup.add(lumoLobe2);
+        }
+
+        // --- ANIMACIÓN PRINCIPAL ---
+        let clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            // 1. Rotación lenta de la escena entera
+            if (autoRotateSpeed > 0) {
+                scene.rotation.y = elapsedTime * (autoRotateSpeed * 0.1);
+            }
+
+            // 2. Efecto de "respiración" cuántica en los orbitales (Pulso de escala y opacidad)
+            if (homoOrbital && lumoLobe1 && lumoLobe2) {
+                const pulseHomo = 1.0 + Math.sin(elapsedTime * 2.5) * 0.05;
+                if (homoOrbital.visible) {
+                    homoOrbital.scale.set(0.9 * pulseHomo, 1.4 * pulseHomo, 0.9 * pulseHomo);
+                }
+
+                const pulseLumo = 1.0 + Math.cos(elapsedTime * 2.5) * 0.04;
+                if (lumoLobe1.visible) {
+                    lumoLobe1.scale.set(1.4 * pulseLumo, 0.75 * pulseLumo, 0.75 * pulseLumo);
+                    lumoLobe2.scale.set(1.4 * pulseLumo, 0.75 * pulseLumo, 0.75 * pulseLumo);
+                }
+            }
+
+            // Pulsación de los Focus-Orbitals de Utilities
+            if (focusLobeA && focusLobeB) {
+                const pulseA = 1.0 + Math.sin(elapsedTime * 3.0) * 0.06;
+                if (focusLobeA.scale.y > 0.1) {
+                    focusLobeA.scale.set(1.0 * pulseA, 1.6 * pulseA, 1.0 * pulseA);
+                }
+                
+                const pulseB = 1.0 + Math.cos(elapsedTime * 3.0) * 0.06;
+                if (focusLobeB.scale.y > 0.1) {
+                    const scaleFactor = isReactionCompleted ? 1.6 : 1.3;
+                    const scaleXZ = isReactionCompleted ? 1.0 : 0.8;
+                    focusLobeB.scale.set(scaleXZ * pulseB, scaleFactor * pulseB, scaleXZ * pulseB);
+                }
+            }
+
+            // 3. Control de actualización de controles de órbita
+            controls.update();
+
+            // Renderizado
+            renderer.render(scene, camera);
+        }
+
+        // --- CONTROLADORES DE INTERFAZ ---
+
+        function setVisualMode(mode) {
+            visualMode = mode;
+            
+            // Actualizar botones activos
+            document.getElementById('btn-standard').classList.toggle('active', mode === 'standard');
+            document.getElementById('btn-active-space').classList.toggle('active', mode === 'active');
+            
+            const infoText = document.getElementById('info-text');
+
+            if (mode === 'standard') {
+                document.getElementById('dimmer').classList.remove('dimmed');
+                infoText.innerHTML = `<strong>Standard Molecular Model</strong>
+                Shows all chemical bonds of glycine. The C (grey), O (red), N (blue), and H (white) atoms are classically simulated in the Hartree-Fock mean field.`;
+
+                // Devolver opacidad y color a todos los átomos y enlaces
+                atomsGroup.children.forEach(mesh => {
+                    gsap.to(mesh.material, { opacity: 1.0, duration: 0.8 });
+                    gsap.to(mesh.scale, { x: 1.0, y: 1.0, z: 1.0, duration: 0.8 });
+                });
+
+                bondsGroup.children.forEach(mesh => {
+                    gsap.to(mesh.material, { opacity: 1.0, duration: 0.8 });
+                    gsap.to(mesh.scale, { x: 1.0, y: 1.0, z: 1.0, duration: 0.8 });
+                });
+
+                // Apagar parcialmente los orbitales (volver al estado por defecto)
+                updateOrbitalOpacity('homo', document.getElementById('slide-homo').value);
+                updateOrbitalOpacity('lumo', document.getElementById('slide-lumo').value);
+
+            } else if (mode === 'active') {
+                document.getElementById('dimmer').classList.add('dimmed');
+                infoText.innerHTML = `<strong>CAS(10,10) Active Space Mode</strong>
+                Dims stable sigma (σ) bonds and highlights active electrons (Nitrogen and Carbonyl). 
+                The HOMO (blue) and LUMO (magenta) orbitals gather the strong correlation calculated in the 20-qubit quantum processor.`;
+
+                // Atenuar átomos no activos
+                atomsGroup.children.forEach(mesh => {
+                    if (mesh.userData.active) {
+                        gsap.to(mesh.material, { opacity: 1.0, duration: 0.8 });
+                        gsap.to(mesh.scale, { x: 1.15, y: 1.15, z: 1.15, duration: 0.8 });
+                    } else {
+                        gsap.to(mesh.material, { opacity: 0.15, duration: 0.8 });
+                        gsap.to(mesh.scale, { x: 0.75, y: 0.75, z: 0.75, duration: 0.8 });
+                    }
+                });
+
+                // Atenuar enlaces no activos
+                bondsGroup.children.forEach(mesh => {
+                    if (mesh.userData.active) {
+                        gsap.to(mesh.material, { opacity: 1.0, duration: 0.8 });
+                    } else {
+                        gsap.to(mesh.material, { opacity: 0.08, duration: 0.8 });
+                    }
+                    gsap.to(mesh.scale, { x: 1.0, y: 1.0, z: 1.0, duration: 0.8 });
+                });
+
+                // Resaltar los orbitales incrementando su opacidad visual temporalmente
+                gsap.to(homoOrbital.material, { opacity: 0.75, duration: 0.8 });
+                gsap.to(lumoLobe1.material, { opacity: 0.75, duration: 0.8 });
+                gsap.to(lumoLobe2.material, { opacity: 0.75, duration: 0.8 });
+                
+                // Actualizar sliders visualmente
+                document.getElementById('slide-homo').value = 75;
+                document.getElementById('slide-lumo').value = 75;
+                document.getElementById('val-homo').innerText = '75%';
+                document.getElementById('val-lumo').innerText = '75%';
+            }
+        }
+
+        function updateOrbitalOpacity(type, value) {
+            const opacity = value / 100;
+            if (type === 'homo') {
+                homoOrbital.material.opacity = opacity;
+                document.getElementById('val-homo').innerText = value + '%';
+            } else if (type === 'lumo') {
+                lumoLobe1.material.opacity = opacity;
+                lumoLobe2.material.opacity = opacity;
+                document.getElementById('val-lumo').innerText = value + '%';
+            }
+        }
+
+        function updateRotationSpeed(value) {
+            autoRotateSpeed = value / 30; // Normalizar
+            document.getElementById('val-rotate').innerText = value == 0 ? 'Off' : (value > 45 ? 'Fast' : 'Auto');
+        }
+
+        // --- ANIMACIÓN DINÁMICA DE EXCITACIÓN ---
+        function triggerExcitation() {
+            // Deshabilitar botón temporalmente para evitar spam
+            const btn = document.getElementById('btn-excite');
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+
+            document.getElementById('tick-trans').innerText = 'EXCITING...';
+            document.getElementById('tick-trans').style.color = 'var(--color-homo)';
+
+            const nitrogen = atomsData[6];
+            const c1 = atomsData[0];
+            const o1 = atomsData[1];
+            
+            // Punto de destino en el Carbonilo (entre C y O)
+            const targetPos = new THREE.Vector3((c1.x + o1.x)/2, (c1.y + o1.y)/2, (c1.z + o1.z)/2);
+            
+            // Punto de inicio en el Nitrógeno
+            const startPos = new THREE.Vector3(nitrogen.x, nitrogen.y + 0.2, nitrogen.z);
+
+            // Generar ráfaga de partículas cuánticas (esferas brillantes pequeñas)
+            const numParticles = 8;
+            
+            for(let i = 0; i < numParticles; i++) {
+                setTimeout(() => {
+                    const pGeom = new THREE.SphereGeometry(0.06, 8, 8);
+                    const pMat = new THREE.MeshBasicMaterial({
+                        color: 0x00f0ff,
+                        transparent: true,
+                        opacity: 1.0,
+                        blending: THREE.AdditiveBlending
+                    });
+                    const particle = new THREE.Mesh(pGeom, pMat);
+                    particle.position.copy(startPos);
+                    scene.add(particle);
+
+                    // Curva cuadrática de Bezier para el arco de salto cuántico
+                    // Control de punto alto del arco
+                    const controlPoint = new THREE.Vector3(
+                        (startPos.x + targetPos.x)/2, 
+                        Math.max(startPos.y, targetPos.y) + 1.2 + Math.random()*0.3,
+                        (startPos.z + targetPos.z)/2 + Math.random()*0.3
+                    );
+
+                    const pData = { t: 0 };
+                    
+                    gsap.to(pData, {
+                        t: 1.0,
+                        duration: 1.2 + Math.random()*0.4,
+                        ease: "power2.out",
+                        onUpdate: () => {
+                            // Calcular posición en la curva de Bezier
+                            const t = pData.t;
+                            const currentPos = new THREE.Vector3();
+                            currentPos.x = (1-t)*(1-t)*startPos.x + 2*(1-t)*t*controlPoint.x + t*t*targetPos.x;
+                            currentPos.y = (1-t)*(1-t)*startPos.y + 2*(1-t)*t*controlPoint.y + t*t*targetPos.y;
+                            currentPos.z = (1-t)*(1-t)*startPos.z + 2*(1-t)*t*controlPoint.z + t*t*targetPos.z;
+                            
+                            particle.position.copy(currentPos);
+                        },
+                        onComplete: () => {
+                            // Al completar la trayectoria, desvanecer y liberar memoria
+                            scene.remove(particle);
+                            pGeom.dispose();
+                            pMat.dispose();
+
+                            // Al chocar la primera partícula, hacer destellar el LUMO
+                            if (i === numParticles - 1) {
+                                // Detonar flash del LUMO
+                                flashLumo();
+                            }
+                        }
+                    });
+                }, i * 150); // Spawning secuencial
+            }
+        }
+
+        function flashLumo() {
+            // Animación de destello y vibración cuántica del LUMO y Carbonilo
+            gsap.to(lumoLobe1.material, { opacity: 1.0, duration: 0.1, yoyo: true, repeat: 3 });
+            gsap.to(lumoLobe2.material, { opacity: 1.0, duration: 0.1, yoyo: true, repeat: 3 });
+            
+            // Escalar temporalmente de forma masiva
+            gsap.to(lumoLobe1.scale, { x: 2.2, y: 1.2, z: 1.2, duration: 0.3, yoyo: true, repeat: 1 });
+            gsap.to(lumoLobe2.scale, { x: 2.2, y: 1.2, z: 1.2, duration: 0.3, yoyo: true, repeat: 1 });
+
+            // Mostrar el estado excitado en el ticker
+            const tick = document.getElementById('tick-trans');
+            tick.innerText = 'EXCITED STATE';
+            tick.style.color = 'var(--color-lumo)';
+
+            // Crear un anillo de expansión brillante (Shockwave)
+            const ringGeom = new THREE.RingGeometry(0.1, 0.2, 32);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: varColorToHex('--color-lumo'),
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            const ring = new THREE.Mesh(ringGeom, ringMat);
+            const c1 = atomsData[0];
+            const o1 = atomsData[1];
+            ring.position.set((c1.x + o1.x)/2, (c1.y + o1.y)/2, (c1.z + o1.z)/2);
+            ring.lookAt(camera.position);
+            scene.add(ring);
+
+            gsap.to(ring.scale, {
+                x: 15,
+                y: 15,
+                duration: 1.0,
+                ease: "power2.out"
+            });
+            gsap.to(ringMat, {
+                opacity: 0,
+                duration: 1.0,
+                onComplete: () => {
+                    scene.remove(ring);
+                    ringGeom.dispose();
+                    ringMat.dispose();
+
+                    // Rehabilitar el botón
+                    const btn = document.getElementById('btn-excite');
+                    btn.disabled = false;
+                    btn.style.opacity = 1.0;
+
+                    // Volver a estado sin excitar tras unos segundos
+                    setTimeout(() => {
+                        if (tick.innerText === 'EXCITED STATE') {
+                            gsap.to(lumoLobe1.material, { opacity: document.getElementById('slide-lumo').value / 100, duration: 1.0 });
+                            gsap.to(lumoLobe2.material, { opacity: document.getElementById('slide-lumo').value / 100, duration: 1.0 });
+                            tick.innerText = 'Ground State';
+                            tick.style.color = 'var(--text-secondary)';
+                        }
+                    }, 4000);
+                }
+            });
+        }
+
+        // --- UTILITIES COCKPIT DEPROTONATION SIMULATION ---
+        let utilitiesMode = false;
+        let waterGroup = null;
+        let bondCylinderOH = null; // Dynamically created new hydronium O-H bond
+        let focusLobeA = null; // Glycine O-H orbital
+        let focusLobeB = null; // Hydronium O-H orbital
+        let reactionTimeline = null;
+        let isReactionRunning = false;
+        let isReactionCompleted = false;
+
+        function toggleUtilities(show) {
+            utilitiesMode = show;
+            
+            const mainPanel = document.getElementById('main-panel-controls');
+            const utilitiesPanel = document.getElementById('utilities-panel-controls');
+            const circuitPanel = document.getElementById('quantum-circuit-panel');
+            
+            if (show) {
+                // If standard rotation speed is high, slow it down for clean viewing
+                if (autoRotateSpeed > 0.1) {
+                    updateRotationSpeed(5); // slow rotation
+                    document.getElementById('slide-rotate').value = 5;
+                }
+                
+                mainPanel.style.display = 'none';
+                utilitiesPanel.style.display = 'flex';
+                circuitPanel.style.display = 'flex';
+                
+                document.getElementById('dimmer').classList.add('dimmed');
+                
+                // Highlight Carboxyl Oxygen (3) and Hydrogen (2)
+                atomsGroup.children.forEach(mesh => {
+                    if (mesh.userData.id === 2 || mesh.userData.id === 3) {
+                        gsap.to(mesh.material, { opacity: 1.0, duration: 0.8 });
+                        gsap.to(mesh.scale, { x: 1.25, y: 1.25, z: 1.25, duration: 0.8 });
+                    } else {
+                        gsap.to(mesh.material, { opacity: 0.15, duration: 0.8 });
+                        gsap.to(mesh.scale, { x: 0.75, y: 0.75, z: 0.75, duration: 0.8 });
+                    }
+                });
+                
+                // Highlight O2 - H bond (from: 3, to: 2)
+                bondsGroup.children.forEach(mesh => {
+                    if (mesh.userData.from === 3 && mesh.userData.to === 2) {
+                        gsap.to(mesh.material, { opacity: 1.0, duration: 0.8 });
+                    } else {
+                        gsap.to(mesh.material, { opacity: 0.08, duration: 0.8 });
+                    }
+                });
+                
+                // Hide HOMO/LUMO orbitals
+                if (homoOrbital) homoOrbital.visible = false;
+                if (lumoLobe1) lumoLobe1.visible = false;
+                if (lumoLobe2) lumoLobe2.visible = false;
+                
+                // Spawn Water molecule & focus orbitals
+                spawnWater();
+                spawnFocusOrbitals();
+                
+            } else {
+                mainPanel.style.display = 'flex';
+                utilitiesPanel.style.display = 'none';
+                circuitPanel.style.display = 'none';
+                document.getElementById('dimmer').classList.remove('dimmed');
+                
+                // Stop any running animations to prevent glitches
+                if (reactionTimeline) {
+                    reactionTimeline.kill();
+                    reactionTimeline = null;
+                }
+                isReactionRunning = false;
+                isReactionCompleted = false;
+
+                // Reset Glycine hydrogen position to original coordinates
+                const atomH = atomsGroup.children.find(mesh => mesh.userData.id === 2);
+                if (atomH) {
+                    const origHPos = new THREE.Vector3(atomsData[2].x, atomsData[2].y, atomsData[2].z);
+                    atomH.position.copy(origHPos);
+                }
+
+                // Reset Glycine O-H bond scale and opacity to normal state
+                const bondOGly = bondsGroup.children.find(mesh => mesh.userData.from === 3 && mesh.userData.to === 2);
+                if (bondOGly) {
+                    bondOGly.scale.set(1.0, 1.0, 1.0);
+                    bondOGly.material.opacity = 1.0;
+                }
+
+                // Reset standard visual mode
+                setVisualMode(visualMode);
+                
+                // Show HOMO/LUMO orbitals if active
+                if (homoOrbital) homoOrbital.visible = true;
+                if (lumoLobe1) lumoLobe1.visible = true;
+                if (lumoLobe2) lumoLobe2.visible = true;
+                
+                // Remove Water molecule & focus orbitals
+                removeWater();
+                removeFocusOrbitals();
+
+                // Reset SVG electron wavepackets
+                const electronAlpha = document.getElementById('circuit-e-alpha');
+                const electronBeta = document.getElementById('circuit-e-beta');
+                const gateAlpha = document.getElementById('circuit-gate-alpha');
+                const gateBeta = document.getElementById('circuit-gate-beta');
+                if (electronAlpha) {
+                    electronAlpha.setAttribute('cx', 115);
+                    electronAlpha.setAttribute('cy', 29);
+                }
+                if (electronBeta) {
+                    electronBeta.setAttribute('cx', 115);
+                    electronBeta.setAttribute('cy', 119);
+                }
+                if (gateAlpha) {
+                    gateAlpha.setAttribute('fill', 'rgba(255, 255, 255, 0.02)');
+                    gateAlpha.setAttribute('stroke', 'var(--card-border)');
+                }
+                if (gateBeta) {
+                    gateBeta.setAttribute('fill', 'rgba(255, 255, 255, 0.02)');
+                    gateBeta.setAttribute('stroke', 'var(--card-border)');
+                }
+
+                // Reset simulation button
+                const btn = document.getElementById('btn-reaction');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = 1.0;
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> SIMULATE PROTON TRANSFER`;
+                }
+
+                // Reset sidebar qubit indicators
+                const q3_13_state = document.getElementById('qubit-3-13-state');
+                const q8_18_state = document.getElementById('qubit-8-18-state');
+                if (q3_13_state) q3_13_state.innerText = `n = 1.000`;
+                if (q8_18_state) q8_18_state.innerText = `n = 0.000`;
+
+                const dot3_13 = document.getElementById('qubit-3-13-dot');
+                if (dot3_13) {
+                    dot3_13.style.backgroundColor = 'rgb(46, 164, 79)';
+                    dot3_13.style.boxShadow = '0 0 8px rgb(46, 164, 79)';
+                }
+                const dot8_18 = document.getElementById('qubit-8-18-dot');
+                if (dot8_18) {
+                    dot8_18.style.backgroundColor = 'rgb(255, 59, 48)';
+                    dot8_18.style.boxShadow = '0 0 0px rgb(255, 59, 48)';
+                }
+            }
+        }
+
+        function spawnWater() {
+            if (waterGroup) {
+                scene.remove(waterGroup);
+            }
+            
+            waterGroup = new THREE.Group();
+            
+            // Fetch actual positions robustly
+            const atomO = atomsGroup.children.find(mesh => mesh.userData.id === 3);
+            const atomH = atomsGroup.children.find(mesh => mesh.userData.id === 2);
+            if (!atomO || !atomH) return;
+            
+            const posO = atomO.position.clone();
+            const posH = atomH.position.clone();
+            const bondDir = new THREE.Vector3().subVectors(posH, posO).normalize();
+            
+            // Spawn position of Water Oxygen (in line with O-H bond, but 2.4 units away)
+            const posWaterO = posH.clone().addScaledVector(bondDir, 2.4);
+            
+            // Orthogonal vectors for placing Hydrogens
+            let perp1 = new THREE.Vector3(1, 0, 0).cross(bondDir).normalize();
+            if (perp1.lengthSq() < 0.01) {
+                perp1 = new THREE.Vector3(0, 0, 1).cross(bondDir).normalize();
+            }
+            
+            const cosHalf = Math.cos(0.912); // water angle is 104.5 degrees
+            const sinHalf = Math.sin(0.912);
+            const dist = 0.96; // O-H distance
+            
+            const dirH1 = bondDir.clone().multiplyScalar(cosHalf).addScaledVector(perp1, sinHalf).normalize();
+            const dirH2 = bondDir.clone().multiplyScalar(cosHalf).addScaledVector(perp1, -sinHalf).normalize();
+            
+            const posWaterH1 = posWaterO.clone().addScaledVector(dirH1, dist);
+            const posWaterH2 = posWaterO.clone().addScaledVector(dirH2, dist);
+            
+            // Save initial positions in userData
+            waterGroup.userData = {
+                initO: posWaterO.clone(),
+                initH1: posWaterH1.clone(),
+                initH2: posWaterH2.clone(),
+                bondDir: bondDir.clone()
+            };
+            
+            const matO = getAtomMaterial('O', true);
+            const matH = getAtomMaterial('H', false);
+            
+            // 1. Oxygen Atom
+            const geomO = new THREE.SphereGeometry(0.32, 32, 32);
+            const meshO = new THREE.Mesh(geomO, matO);
+            meshO.position.copy(posWaterO);
+            meshO.name = "waterO";
+            waterGroup.add(meshO);
+            
+            // 2. Hydrogen 1
+            const geomH1 = new THREE.SphereGeometry(0.18, 32, 32);
+            const meshH1 = new THREE.Mesh(geomH1, matH);
+            meshH1.position.copy(posWaterH1);
+            meshH1.name = "waterH1";
+            waterGroup.add(meshH1);
+            
+            // 3. Hydrogen 2
+            const geomH2 = new THREE.SphereGeometry(0.18, 32, 32);
+            const meshH2 = new THREE.Mesh(geomH2, matH.clone());
+            meshH2.position.copy(posWaterH2);
+            meshH2.name = "waterH2";
+            waterGroup.add(meshH2);
+            
+            // 4. Create covalent bonds
+            createWaterBond(meshO.position, meshH1.position, "waterBond1");
+            createWaterBond(meshO.position, meshH2.position, "waterBond2");
+            
+            // Set opacity to 0 initially for fade-in
+            waterGroup.children.forEach(child => {
+                child.material.transparent = true;
+                child.material.opacity = 0;
+            });
+            
+            scene.add(waterGroup);
+            
+            waterGroup.children.forEach(child => {
+                gsap.to(child.material, { opacity: 1.0, duration: 0.8 });
+            });
+        }
+        
+        function createWaterBond(p1, p2, name) {
+            const direction = new THREE.Vector3().subVectors(p2, p1);
+            const length = direction.length();
+            
+            const geom = new THREE.CylinderGeometry(0.04, 0.04, length, 12);
+            geom.translate(0, length / 2, 0);
+            geom.rotateX(Math.PI / 2);
+            
+            const mesh = new THREE.Mesh(geom, bondMaterial.clone());
+            mesh.position.copy(p1);
+            mesh.lookAt(p2);
+            mesh.name = name;
+            
+            waterGroup.add(mesh);
+        }
+        
+        function removeWater() {
+            if (waterGroup) {
+                waterGroup.children.forEach(child => {
+                    gsap.to(child.material, {
+                        opacity: 0, 
+                        duration: 0.5,
+                        onComplete: () => {
+                            if (child === waterGroup.children[waterGroup.children.length - 1]) {
+                                scene.remove(waterGroup);
+                                waterGroup = null;
+                            }
+                        }
+                    });
+                });
+            }
+            if (bondCylinderOH) {
+                scene.remove(bondCylinderOH);
+                bondCylinderOH = null;
+            }
+        }
+
+        function spawnFocusOrbitals() {
+            removeFocusOrbitals();
+            
+            const atomO = atomsGroup.children.find(mesh => mesh.userData.id === 3);
+            const atomH = atomsGroup.children.find(mesh => mesh.userData.id === 2);
+            if (!atomO || !atomH) return;
+            
+            const posO = atomO.position.clone();
+            const posH = atomH.position.clone();
+            
+            // Lobe A: Centered along the Glycine O-H bond
+            const midA = new THREE.Vector3().addVectors(posO, posH).multiplyScalar(0.5);
+            
+            const geomA = new THREE.SphereGeometry(0.35, 32, 32);
+            const matA = new THREE.MeshBasicMaterial({
+                color: 0xffaa00, // beautiful gold glow
+                transparent: true,
+                opacity: 0.0,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            
+            focusLobeA = new THREE.Mesh(geomA, matA);
+            focusLobeA.position.copy(midA);
+            focusLobeA.scale.set(1.0, 1.6, 1.0); // Ellipsoid along bond
+            focusLobeA.lookAt(posH);
+            scene.add(focusLobeA);
+            
+            // Lobe B: Centered on the incoming water Oxygen pointing towards Glycine's Hydrogen
+            const meshWaterO = waterGroup.children.find(m => m.name === "waterO");
+            if (!meshWaterO) return;
+            const posWaterO = meshWaterO.position.clone();
+            const dirB = new THREE.Vector3().subVectors(posH, posWaterO).normalize();
+            const midB = posWaterO.clone().addScaledVector(dirB, 0.4);
+            
+            const geomB = new THREE.SphereGeometry(0.32, 32, 32);
+            const matB = new THREE.MeshBasicMaterial({
+                color: 0x00ff66, // Emerald green glow
+                transparent: true,
+                opacity: 0.0,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            
+            focusLobeB = new THREE.Mesh(geomB, matB);
+            focusLobeB.position.copy(midB);
+            focusLobeB.scale.set(0.8, 1.3, 0.8);
+            focusLobeB.lookAt(posH);
+            scene.add(focusLobeB);
+            
+            gsap.to(focusLobeA.material, { opacity: 0.6, duration: 0.8 });
+            gsap.to(focusLobeB.material, { opacity: 0.1, duration: 0.8 });
+        }
+        
+        function removeFocusOrbitals() {
+            if (focusLobeA) {
+                scene.remove(focusLobeA);
+                focusLobeA.geometry.dispose();
+                focusLobeA.material.dispose();
+                focusLobeA = null;
+            }
+            if (focusLobeB) {
+                scene.remove(focusLobeB);
+                focusLobeB.geometry.dispose();
+                focusLobeB.material.dispose();
+                focusLobeB = null;
+            }
+        }
+
+        function triggerReaction() {
+            if (isReactionRunning) return;
+            
+            const btn = document.getElementById('btn-reaction');
+            
+            if (isReactionCompleted) {
+                resetReaction();
+                return;
+            }
+            
+            isReactionRunning = true;
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+            btn.innerText = "TRANSFERRING PROTON...";
+            
+            // Find three.js components robustly
+            const atomH = atomsGroup.children.find(mesh => mesh.userData.id === 2);
+            const atomO = atomsGroup.children.find(mesh => mesh.userData.id === 3);
+            const bondOGly = bondsGroup.children.find(mesh => mesh.userData.from === 3 && mesh.userData.to === 2);
+            
+            const meshWaterO = waterGroup.children.find(m => m.name === "waterO");
+            const meshWaterH1 = waterGroup.children.find(m => m.name === "waterH1");
+            const meshWaterH2 = waterGroup.children.find(m => m.name === "waterH2");
+            const bondWater1 = waterGroup.children.find(m => m.name === "waterBond1");
+            const bondWater2 = waterGroup.children.find(m => m.name === "waterBond2");
+            
+            if (!atomH || !atomO || !bondOGly || !meshWaterO || !meshWaterH1 || !meshWaterH2 || !bondWater1 || !bondWater2) {
+                isReactionRunning = false;
+                btn.disabled = false;
+                btn.style.opacity = 1.0;
+                btn.innerText = "SIMULATE PROTON TRANSFER";
+                return;
+            }
+            
+            const initWaterO = waterGroup.userData.initO.clone();
+            const initWaterH1 = waterGroup.userData.initH1.clone();
+            const initWaterH2 = waterGroup.userData.initH2.clone();
+            const bondDir = waterGroup.userData.bondDir.clone();
+            
+            // Step 1: Water approaches Hydrogen
+            const approachPosO = initWaterO.clone().addScaledVector(bondDir, -1.2);
+            const approachPosH1 = initWaterH1.clone().addScaledVector(bondDir, -1.2);
+            const approachPosH2 = initWaterH2.clone().addScaledVector(bondDir, -1.2);
+            
+            reactionTimeline = gsap.timeline({
+                onComplete: () => {
+                    isReactionRunning = false;
+                    isReactionCompleted = true;
+                    btn.disabled = false;
+                    btn.style.opacity = 1.0;
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> RESET SYSTEM`;
+                }
+            });
+            
+            // 1. Animate water atoms & focus B approaching
+            reactionTimeline.to([meshWaterO.position, focusLobeB.position], {
+                x: approachPosO.x,
+                y: approachPosO.y,
+                z: approachPosO.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            reactionTimeline.to(meshWaterH1.position, {
+                x: approachPosH1.x,
+                y: approachPosH1.y,
+                z: approachPosH1.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            reactionTimeline.to(meshWaterH2.position, {
+                x: approachPosH2.x,
+                y: approachPosH2.y,
+                z: approachPosH2.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            // Animate Water bonds in sync
+            reactionTimeline.to([bondWater1.position, bondWater2.position], {
+                x: "+=" + (-bondDir.x * 1.2),
+                y: "+=" + (-bondDir.y * 1.2),
+                z: "+=" + (-bondDir.z * 1.2),
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            // 2. Covalent Cleavage & Docking
+            // Shrink Glycine O-H bond cylinder in all dimensions (fixes Three.js scaling alignment bug)
+            reactionTimeline.to(bondOGly.scale, {
+                x: 0.0001,
+                y: 0.0001,
+                z: 0.0001,
+                duration: 1.2,
+                ease: "power1.in"
+            }, 1.2);
+            
+            reactionTimeline.to(bondOGly.material, {
+                opacity: 0,
+                duration: 1.2,
+                ease: "power1.in"
+            }, 1.2);
+            
+            // Dock Glycine's Hydrogen to the Water Oxygen (forming H3O+)
+            const dockedHPos = approachPosO.clone().addScaledVector(bondDir, -0.96);
+            reactionTimeline.to(atomH.position, {
+                x: dockedHPos.x,
+                y: dockedHPos.y,
+                z: dockedHPos.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 1.0);
+            
+            // Qubit state-telemetry synchronization counting (Q3,13 and Q8,18)
+            const qubitData = { q3_13: 1.0, q8_18: 0.0 };
+            reactionTimeline.to(qubitData, {
+                q3_13: 0.0,
+                q8_18: 1.0,
+                duration: 1.5,
+                ease: "power1.inOut",
+                onUpdate: () => {
+                    document.getElementById('qubit-3-13-state').innerText = `n = ${qubitData.q3_13.toFixed(3)}`;
+                    document.getElementById('qubit-8-18-state').innerText = `n = ${qubitData.q8_18.toFixed(3)}`;
+                    
+                    const color3_13 = `rgb(${Math.round(255 * (1 - qubitData.q3_13) + 46 * qubitData.q3_13)}, ${Math.round(59 * (1 - qubitData.q3_13) + 164 * qubitData.q3_13)}, ${Math.round(48 * (1 - qubitData.q3_13) + 79 * qubitData.q3_13)})`;
+                    const dot3_13 = document.getElementById('qubit-3-13-dot');
+                    dot3_13.style.backgroundColor = color3_13;
+                    dot3_13.style.boxShadow = `0 0 ${8 * qubitData.q3_13}px ${color3_13}`;
+                    
+                    const color8_18 = `rgb(${Math.round(255 * (1 - qubitData.q8_18) + 0 * qubitData.q8_18)}, ${Math.round(59 * (1 - qubitData.q8_18) + 255 * qubitData.q8_18)}, ${Math.round(48 * (1 - qubitData.q8_18) + 102 * qubitData.q8_18)})`;
+                    const dot8_18 = document.getElementById('qubit-8-18-dot');
+                    dot8_18.style.backgroundColor = color8_18;
+                    dot8_18.style.boxShadow = `0 0 ${8 * qubitData.q8_18}px ${color8_18}`;
+                }
+            }, 1.0);
+
+            // Animate SVG electron wavepackets hopping across wires in sync
+            const electronAlpha = document.getElementById('circuit-e-alpha');
+            const electronBeta = document.getElementById('circuit-e-beta');
+            const gateAlpha = document.getElementById('circuit-gate-alpha');
+            const gateBeta = document.getElementById('circuit-gate-beta');
+            
+            if (electronAlpha && electronBeta) {
+                reactionTimeline.to(electronAlpha, {
+                    attr: { cx: 235, cy: 69 },
+                    duration: 1.5,
+                    ease: "power2.inOut"
+                }, 1.0);
+                
+                reactionTimeline.to(electronBeta, {
+                    attr: { cx: 235, cy: 159 },
+                    duration: 1.5,
+                    ease: "power2.inOut"
+                }, 1.0);
+            }
+            
+            // Light up SVG fSim gates as electrons pass through
+            if (gateAlpha && gateBeta) {
+                reactionTimeline.to([gateAlpha, gateBeta], {
+                    attr: { fill: "rgba(0, 240, 255, 0.18)", stroke: "#00f0ff" },
+                    duration: 0.5,
+                    yoyo: true,
+                    repeat: 1
+                }, 1.4);
+            }
+            
+            // Create coordinate covalent bond cylinder in Hydronium
+            reactionTimeline.call(() => {
+                const dir = new THREE.Vector3().subVectors(atomH.position, meshWaterO.position);
+                const len = dir.length();
+                
+                const geom = new THREE.CylinderGeometry(0.04, 0.04, len, 12);
+                geom.translate(0, len / 2, 0);
+                geom.rotateX(Math.PI / 2);
+                
+                bondCylinderOH = new THREE.Mesh(geom, bondMaterial.clone());
+                bondCylinderOH.position.copy(meshWaterO.position);
+                bondCylinderOH.lookAt(atomH.position);
+                bondCylinderOH.scale.set(0.001, 0.001, 0.001);
+                bondCylinderOH.material.transparent = true;
+                bondCylinderOH.material.opacity = 0;
+                scene.add(bondCylinderOH);
+                
+                gsap.to(bondCylinderOH.scale, { x: 1.0, y: 1.0, z: 1.0, duration: 0.8 });
+                gsap.to(bondCylinderOH.material, { opacity: 1.0, duration: 0.8 });
+            }, null, 1.5);
+            
+            // Morph orbitals
+            reactionTimeline.to(focusLobeA.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 1.2, ease: "power2.in" }, 1.0);
+            reactionTimeline.to(focusLobeA.material, { opacity: 0, duration: 1.2 }, 1.0);
+            
+            const midBNew = new THREE.Vector3().addVectors(approachPosO, dockedHPos).multiplyScalar(0.5);
+            reactionTimeline.to(focusLobeB.position, { x: midBNew.x, y: midBNew.y, z: midBNew.z, duration: 1.2, ease: "power2.inOut" }, 1.2);
+            reactionTimeline.to(focusLobeB.material, { opacity: 0.65, duration: 1.2 }, 1.2);
+            reactionTimeline.to(focusLobeB.scale, { x: 1.0, y: 1.6, z: 1.0, duration: 1.2 }, 1.2);
+            reactionTimeline.call(() => {
+                if (focusLobeB) focusLobeB.lookAt(atomH.position);
+            }, null, 2.0);
+            
+            // 3. Ionic Product Separation
+            const sepOffset = bondDir.clone().multiplyScalar(1.0);
+            
+            reactionTimeline.to([meshWaterO.position, meshWaterH1.position, meshWaterH2.position, atomH.position, focusLobeB.position], {
+                x: "+=" + sepOffset.x,
+                y: "+=" + sepOffset.y,
+                z: "+=" + sepOffset.z,
+                duration: 1.2,
+                ease: "power1.inOut"
+            }, 2.5);
+            
+            reactionTimeline.to([bondWater1.position, bondWater2.position], {
+                x: "+=" + sepOffset.x,
+                y: "+=" + sepOffset.y,
+                z: "+=" + sepOffset.z,
+                duration: 1.2,
+                ease: "power1.inOut"
+            }, 2.5);
+            
+            reactionTimeline.to(bondCylinderOH.position, {
+                x: "+=" + sepOffset.x,
+                y: "+=" + sepOffset.y,
+                z: "+=" + sepOffset.z,
+                duration: 1.2,
+                ease: "power1.inOut"
+            }, 2.5);
+        }
+        
+        function resetReaction() {
+            if (isReactionRunning) return;
+            
+            isReactionRunning = true;
+            const btn = document.getElementById('btn-reaction');
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+            btn.innerText = "RESETTING MOLECULAR STATES...";
+            
+            const atomH = atomsGroup.children.find(mesh => mesh.userData.id === 2);
+            const bondOGly = bondsGroup.children.find(mesh => mesh.userData.from === 3 && mesh.userData.to === 2);
+            if (!atomH || !bondOGly) return;
+            
+            const origHPos = new THREE.Vector3(atomsData[2].x, atomsData[2].y, atomsData[2].z);
+            
+            const resetTimeline = gsap.timeline({
+                onComplete: () => {
+                    isReactionRunning = false;
+                    isReactionCompleted = false;
+                    btn.disabled = false;
+                    btn.style.opacity = 1.0;
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> SIMULATE PROTON TRANSFER`;
+                    
+                    if (bondCylinderOH) {
+                        scene.remove(bondCylinderOH);
+                        bondCylinderOH = null;
+                    }
+                    
+                    spawnWater();
+                    spawnFocusOrbitals();
+                }
+            });
+            
+            if (bondCylinderOH) {
+                resetTimeline.to(bondCylinderOH.material, { opacity: 0, duration: 0.8 }, 0);
+            }
+            if (focusLobeB) {
+                resetTimeline.to(focusLobeB.material, { opacity: 0, duration: 0.8 }, 0);
+            }
+            
+            // Animate Hydrogen back
+            resetTimeline.to(atomH.position, {
+                x: origHPos.x,
+                y: origHPos.y,
+                z: origHPos.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            // Restore Glycine O-H bond length & opacity in all dimensions
+            resetTimeline.to(bondOGly.scale, {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+                duration: 1.2,
+                ease: "power1.out"
+            }, 0.5);
+            
+            resetTimeline.to(bondOGly.material, {
+                opacity: 1.0,
+                duration: 1.2,
+                ease: "power1.out"
+            }, 0.5);
+            
+            // Animate Water back
+            const meshWaterO = waterGroup.children.find(m => m.name === "waterO");
+            const meshWaterH1 = waterGroup.children.find(m => m.name === "waterH1");
+            const meshWaterH2 = waterGroup.children.find(m => m.name === "waterH2");
+            const bondWater1 = waterGroup.children.find(m => m.name === "waterBond1");
+            const bondWater2 = waterGroup.children.find(m => m.name === "waterBond2");
+            
+            const initWaterO = waterGroup.userData.initO;
+            const initWaterH1 = waterGroup.userData.initH1;
+            const initWaterH2 = waterGroup.userData.initH2;
+            
+            resetTimeline.to(meshWaterO.position, {
+                x: initWaterO.x,
+                y: initWaterO.y,
+                z: initWaterO.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            resetTimeline.to(meshWaterH1.position, {
+                x: initWaterH1.x,
+                y: initWaterH1.y,
+                z: initWaterH1.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            resetTimeline.to(meshWaterH2.position, {
+                x: initWaterH2.x,
+                y: initWaterH2.y,
+                z: initWaterH2.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            // Reset water bond offsets
+            resetTimeline.to([bondWater1.position, bondWater2.position], {
+                x: initWaterO.x,
+                y: initWaterO.y,
+                z: initWaterO.z,
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, 0);
+            
+            // Reset qubit state badge occupancies and dot colors
+            const qubitData = { q3_13: 0.0, q8_18: 1.0 };
+            resetTimeline.to(qubitData, {
+                q3_13: 1.0,
+                q8_18: 0.0,
+                duration: 1.5,
+                ease: "power1.inOut",
+                onUpdate: () => {
+                    document.getElementById('qubit-3-13-state').innerText = `n = ${qubitData.q3_13.toFixed(3)}`;
+                    document.getElementById('qubit-8-18-state').innerText = `n = ${qubitData.q8_18.toFixed(3)}`;
+                    
+                    const color3_13 = `rgb(${Math.round(255 * (1 - qubitData.q3_13) + 46 * qubitData.q3_13)}, ${Math.round(59 * (1 - qubitData.q3_13) + 164 * qubitData.q3_13)}, ${Math.round(48 * (1 - qubitData.q3_13) + 79 * qubitData.q3_13)})`;
+                    const dot3_13 = document.getElementById('qubit-3-13-dot');
+                    dot3_13.style.backgroundColor = color3_13;
+                    dot3_13.style.boxShadow = `0 0 ${8 * qubitData.q3_13}px ${color3_13}`;
+                    
+                    const color8_18 = `rgb(${Math.round(255 * (1 - qubitData.q8_18) + 0 * qubitData.q8_18)}, ${Math.round(59 * (1 - qubitData.q8_18) + 255 * qubitData.q8_18)}, ${Math.round(48 * (1 - qubitData.q8_18) + 102 * qubitData.q8_18)})`;
+                    const dot8_18 = document.getElementById('qubit-8-18-dot');
+                    dot8_18.style.backgroundColor = color8_18;
+                    dot8_18.style.boxShadow = `0 0 ${8 * qubitData.q8_18}px ${color8_18}`;
+                }
+            }, 0);
+
+            // Reset SVG electron wavepackets
+            const electronAlphaBack = document.getElementById('circuit-e-alpha');
+            const electronBetaBack = document.getElementById('circuit-e-beta');
+            const gateAlphaBack = document.getElementById('circuit-gate-alpha');
+            const gateBetaBack = document.getElementById('circuit-gate-beta');
+            
+            if (electronAlphaBack && electronBetaBack) {
+                resetTimeline.to(electronAlphaBack, {
+                    attr: { cx: 115, cy: 29 },
+                    duration: 1.5,
+                    ease: "power2.inOut"
+                }, 0);
+                
+                resetTimeline.to(electronBetaBack, {
+                    attr: { cx: 115, cy: 119 },
+                    duration: 1.5,
+                    ease: "power2.inOut"
+                }, 0);
+            }
+            
+            if (gateAlphaBack && gateBetaBack) {
+                resetTimeline.to([gateAlphaBack, gateBetaBack], {
+                    attr: { fill: "rgba(255, 255, 255, 0.02)", stroke: "var(--card-border)" },
+                    duration: 0.5
+                }, 0);
+            }
+        }
+
+        // --- AUXILIARES ---
+        function varColorToHex(varName) {
+            const temp = document.createElement('div');
+            temp.style.color = 'var(' + varName + ')';
+            document.body.appendChild(temp);
+            const rgb = window.getComputedStyle(temp).color;
+            document.body.removeChild(temp);
+            
+            // Parsear rgb(r, g, b) a hexadecimal
+            const values = rgb.replace(/[^\d,]/g, '').split(',');
+            const r = parseInt(values[0], 10);
+            const g = parseInt(values[1], 10);
+            const b = parseInt(values[2], 10);
+            return (r << 16) | (g << 8) | b;
+        }
+
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // --- EVENTO DE INICIO AL CARGAR LA PÁGINA ---
+        window.onload = init;
+    </script>
+</body>
+</html>
