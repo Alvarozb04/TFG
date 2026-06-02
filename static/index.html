@@ -432,6 +432,7 @@
         }
 
         .project-card {
+            align-self: start;
             background: var(--bg-panel);
             backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
@@ -543,60 +544,216 @@
             transform: translateY(-2px);
         }
 
-        /* Placeholders for future projects */
-        .placeholders-column {
+        /* Carpetas de Proyectos */
+        .folders-column {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.8rem;
         }
 
-        .placeholder-card {
-            background: rgba(13, 17, 33, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 16px;
-            padding: 1.5rem;
+        .folder-card {
+            background: rgba(13, 17, 33, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.8rem;
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
-            opacity: 0.6;
+            gap: 1.2rem;
+            position: relative;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+            transition: var(--transition-smooth);
+            overflow: hidden;
+        }
+
+        .folder-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--border-color);
             transition: var(--transition-smooth);
         }
 
-        .placeholder-card:hover {
-            opacity: 0.85;
-            border-color: var(--border-color);
-            background: rgba(13, 17, 33, 0.45);
+        .folder-card.ml-folder::before {
+            background: linear-gradient(180deg, var(--cyan) 0%, #6366f1 100%);
         }
 
-        .placeholder-header {
+        .folder-card.future-folder::before {
+            background: linear-gradient(180deg, var(--purple) 0%, #d946ef 100%);
+        }
+
+        .folder-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+            background: rgba(13, 17, 33, 0.55);
+        }
+
+        .folder-card:hover .folder-icon i {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .folder-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
-        .placeholder-badge {
+        .folder-title-area {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .folder-icon {
+            font-size: 1.6rem;
+            transition: var(--transition-smooth);
+        }
+
+        .folder-icon i {
+            transition: var(--transition-smooth);
+        }
+
+        .folder-card.ml-folder .folder-icon {
+            color: var(--cyan);
+        }
+
+        .folder-card.future-folder .folder-icon {
+            color: var(--purple);
+        }
+
+        .folder-title-area h4 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
+        .folder-badge {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-color);
-            color: var(--text-dark);
+            color: var(--text-muted);
             font-size: 0.65rem;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 100px;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .placeholder-card h4 {
+        .folder-card.ml-folder .folder-badge {
+            background: rgba(6, 182, 212, 0.06);
+            border-color: rgba(6, 182, 212, 0.2);
+            color: #a5f3fc;
+        }
+
+        .folder-card.future-folder .folder-badge {
+            background: rgba(168, 85, 247, 0.06);
+            border-color: rgba(168, 85, 247, 0.2);
+            color: #e9d5ff;
+         }
+ 
+         .folder-card.ds-folder::before {
+             background: linear-gradient(180deg, var(--orange) 0%, #ea580c 100%);
+         }
+ 
+         .folder-card.ds-folder .folder-icon {
+             color: var(--orange);
+         }
+ 
+         .folder-card.ds-folder .folder-badge {
+             background: rgba(245, 158, 11, 0.06);
+             border-color: rgba(245, 158, 11, 0.2);
+             color: #fde68a;
+         }
+
+        .folder-contents {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .subproject-item {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .subproject-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+
+        .subproject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+
+        .subproject-header h5 {
             font-family: var(--font-heading);
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 600;
+            color: #f3f4f6;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subproject-header h5 i {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .subproject-badge {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 100px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-muted);
         }
 
-        .placeholder-card p {
+        .ml-folder .subproject-badge {
+            color: #2ea44f;
+            background: rgba(46, 164, 79, 0.08);
+            border-color: rgba(46, 164, 79, 0.25);
+        }
+
+        .future-folder .subproject-badge {
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.08);
+            border-color: rgba(6, 182, 212, 0.25);
+        }
+
+        .subproject-item p {
             font-size: 0.8rem;
             color: var(--text-dark);
             line-height: 1.5;
+            margin: 0;
             font-weight: 300;
+        }
+
+        .subproject-link {
+            transition: var(--transition-smooth);
+        }
+
+        .subproject-link:hover {
+            color: #fff !important;
+            text-shadow: 0 0 8px var(--cyan);
         }
 
         /* =====================================================================
@@ -814,40 +971,125 @@
                 </div>
             </section>
 
-            <!-- SLOTS / PLACEHOLDERS FOR FUTURE PROJECTS -->
-            <div class="placeholders-column">
+            <!-- PROJECT FOLDERS COLUMN -->
+            <div class="folders-column">
                 
-                <!-- PLACEHOLDER VQC -->
-                <div class="placeholder-card">
-                    <div class="placeholder-header">
-                        <h4>Variational Quantum Classifier (VQC)</h4>
-                        <span class="placeholder-badge">Coming Soon</span>
+                <!-- FOLDER 1: MACHINE LEARNING PROJECTS -->
+                <div class="folder-card ml-folder">
+                    <div class="folder-header">
+                        <div class="folder-title-area">
+                            <span class="folder-icon"><i class="fa-solid fa-folder-open"></i></span>
+                            <h4>Machine Learning Projects</h4>
+                        </div>
+                        <span class="folder-badge">5 Projects</span>
                     </div>
-                    <p>
-                        Hybrid algorithm for classifying non-linear geometric datasets (Circles and Moons). Utilizes quantum feature maps in PennyLane optimized with classical networks.
-                    </p>
+                    <div class="folder-contents">
+                        
+                        <!-- SUBPROJECT: DERMOSCAN-CNN -->
+                        <div class="subproject-item">
+                            <div class="subproject-header">
+                                <h5><i class="fa-solid fa-microscope"></i> DermoScan-CNN: Melanoma Classifier</h5>
+                                <span class="subproject-badge">Active Sandbox</span>
+                            </div>
+                            <p style="margin-bottom: 0.5rem;">
+                                Clinical biopsy analysis using deep convolutional neural networks. Classifies skin lesions as benign/malignant, extracts real-time boundary contiguity/pigment features, filters hair obstructions, and maps attention with Grad-CAM heatmaps.
+                            </p>
+                            <a href="melanoma_interactivo.html" target="_blank" class="subproject-link" style="color: var(--cyan); text-decoration: none; font-size: 0.78rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                Launch Diagnostic Chamber <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <!-- SUBPROJECT: GALACTIC OBJECTS CLUSTERING -->
+                        <div class="subproject-item">
+                            <div class="subproject-header">
+                                <h5><i class="fa-solid fa-user-astronaut"></i> Clustering of Galactic Objects</h5>
+                                <span class="subproject-badge" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.4); color: #fde68a;">Active Sandbox</span>
+                            </div>
+                            <p style="margin-bottom: 0.5rem;">
+                                Unsupervised machine learning classification analyzing 600,000+ stars from the ESA Gaia DR3 space satellite. Features missing data cleanup, dimensional reduction (PCA), density-based DBSCAN clustering, and K-Means segmentation.
+                            </p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                <a href="galaxias_interactivo.html" target="_blank" class="subproject-link" style="color: var(--orange); text-decoration: none; font-size: 0.78rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                    Launch Clustering Sandbox <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-chart-line" style="color: var(--orange);"></i> Davies-Bouldin & Silhouette
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- SUBPROJECT: IBEX-35 STOCK FORECASTING -->
+                        <div class="subproject-item">
+                            <div class="subproject-header">
+                                <h5><i class="fa-solid fa-chart-line"></i> IBEX-35 RNN Stock Forecasting</h5>
+                                <span class="subproject-badge" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.2); color: #a7f3d0;">Recurrent Networks</span>
+                            </div>
+                            <p>
+                                Financial forecasting using recurrent neural networks (LSTM & GRU) on historical Spanish stock index records (IBEX-35), detailing backtesting trade yields and volatility matrices.
+                            </p>
+                        </div>
+
+                        <!-- SUBPROJECT: VQC -->
+                        <div class="subproject-item">
+                            <div class="subproject-header">
+                                <h5><i class="fa-solid fa-network-wired"></i> Variational Quantum Classifier (VQC)</h5>
+                                <span class="subproject-badge">Active Sandbox</span>
+                            </div>
+                            <p>
+                                Hybrid model for non-linear classifications (Circles & Moons). Utilizes quantum feature maps in PennyLane optimized with classical networks.
+                            </p>
+                        </div>
+
+                        <!-- SUBPROJECT: QSVM -->
+                        <div class="subproject-item">
+                            <div class="subproject-header">
+                                <h5><i class="fa-solid fa-wave-square"></i> Quantum Support Vector Machine (QSVM)</h5>
+                                <span class="subproject-badge">Active Sandbox</span>
+                            </div>
+                            <p>
+                                Classification using quantum overlap kernels in multivariate Hilbert spaces, avoiding classical linear separability bottlenecks.
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
 
-                <!-- PLACEHOLDER QSVM -->
-                <div class="placeholder-card">
-                    <div class="placeholder-header">
-                        <h4>Quantum Support Vector Machine (QSVM)</h4>
-                        <span class="placeholder-badge">Coming Soon</span>
-                    </div>
-                    <p>
-                        Classification based on quantum wavefunction overlap kernels in multivariate Hilbert spaces, bypassing classical linear separability bottlenecks.
-                    </p>
-                </div>
 
-                <!-- PLACEHOLDER QCNN -->
-                <div class="placeholder-card">
-                    <div class="placeholder-header">
-                        <h4>Quantum Convolutional Neural Network (QCNN)</h4>
-                        <span class="placeholder-badge">Coming Soon</span>
+
+                <!-- FOLDER 2: FUTURE PROJECTS -->
+                <div class="folder-card future-folder">
+                    <div class="folder-header">
+                        <div class="folder-title-area">
+                            <span class="folder-icon"><i class="fa-solid fa-folder"></i></span>
+                            <h4>Future Projects</h4>
+                        </div>
+                        <span class="folder-badge">Pipeline</span>
                     </div>
-                    <p>
-                        Quantum convolutional architecture to classify simplified 4x4 molecular images, employing parameterized convolution and quantum pooling layers.
-                    </p>
+                    <div class="folder-contents">
+                        
+                        <!-- SUBPROJECT: QCNN -->
+                        <div class="subproject-item">
+                            <div class="subproject-header">
+                                <h5><i class="fa-solid fa-brain"></i> Quantum Convolutional Networks (QCNN)</h5>
+                                <span class="subproject-badge">Coming Soon</span>
+                            </div>
+                            <p>
+                                Quantum convolutional architecture to classify 4x4 molecular images, utilizing parameterized convolution and quantum pooling.
+                            </p>
+                        </div>
+
+                        <!-- SUBPROJECT: QUANTUM OPTIMIZATION -->
+                        <div class="subproject-item">
+                            <div class="subproject-header">
+                                <h5><i class="fa-solid fa-chart-line"></i> Quantum Optimization (QAOA)</h5>
+                                <span class="subproject-badge">Research</span>
+                            </div>
+                            <p>
+                                Combinatorial optimization algorithm (Max-Cut, portfolio selection) using Quantum Approximate Optimization Algorithm (QAOA) models.
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
 
             </div>

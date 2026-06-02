@@ -5,3 +5,4 @@ __pycache__/
 .gemini/
 .system_generated/
 *.log
+scratch/
