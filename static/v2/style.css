@@ -213,47 +213,56 @@ body {
     display: none !important; /* Hide vector labels/names to keep line art clean */
 }
 
-svg path {
-    fill: rgba(6, 9, 20, 0.65);
-    stroke: rgba(255, 255, 255, 0.08);
+svg path, svg polygon {
+    fill: rgba(6, 9, 20, 0.65) !important;
+    stroke: rgba(255, 255, 255, 0.08) !important;
     stroke-width: 0.7px;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-svg path:hover {
-    fill: rgba(12, 18, 38, 0.85);
-    stroke: rgba(255, 255, 255, 0.18);
+svg path:hover, svg polygon:hover {
+    fill: rgba(12, 18, 38, 0.85) !important;
+    stroke: rgba(255, 255, 255, 0.18) !important;
 }
 
 /* Active Region: Madrid */
 #path-madrid {
-    stroke: var(--purple);
-    fill: rgba(157, 78, 221, 0.05);
-    stroke-width: 1.4px;
-    filter: drop-shadow(0 0 8px var(--purple-glow));
+    stroke: var(--purple) !important;
+    fill: rgba(157, 78, 221, 0.15) !important;
+    stroke-width: 1.4px !important;
+    filter: drop-shadow(0 0 8px var(--purple-glow)) !important;
     cursor: pointer;
 }
 
 #path-madrid:hover {
-    fill: rgba(157, 78, 221, 0.12);
-    stroke-width: 2.2px;
-    filter: drop-shadow(0 0 16px var(--purple-glow));
+    fill: rgba(157, 78, 221, 0.22) !important;
+    stroke-width: 2.2px !important;
+    filter: drop-shadow(0 0 16px var(--purple-glow)) !important;
 }
 
 /* Active Region: Murcia */
 #path-murcia {
-    stroke: var(--cyan);
-    fill: rgba(0, 240, 255, 0.05);
-    stroke-width: 1.4px;
-    filter: drop-shadow(0 0 8px var(--cyan-glow));
+    stroke: var(--cyan) !important;
+    fill: rgba(0, 240, 255, 0.15) !important;
+    stroke-width: 1.4px !important;
+    filter: drop-shadow(0 0 8px var(--cyan-glow)) !important;
     cursor: pointer;
 }
 
 #path-murcia:hover {
-    fill: rgba(0, 240, 255, 0.12);
-    stroke-width: 2.2px;
-    filter: drop-shadow(0 0 16px var(--cyan-glow));
+    fill: rgba(0, 240, 255, 0.22) !important;
+    stroke-width: 2.2px !important;
+    filter: drop-shadow(0 0 16px var(--cyan-glow)) !important;
 }
+
+/* Hide Portugal (not part of Spain) and old Canary Islands divider box */
+#path-portugal {
+    display: none !important;
+}
+#_127611872 {
+    display: none !important;
+}
+
 
 /* PULSING MARKERS OVERLAY */
 .map-marker {
@@ -771,3 +780,21 @@ svg path:hover {
     border-color: rgba(157, 78, 221, 0.3);
     background: rgba(157, 78, 221, 0.04);
 }
+
+/* Generic Drawer Theme (neutral slate/white highlight) */
+#drawer-generic {
+    border-left: 2px solid var(--text-dimmed);
+    box-shadow: -15px 0 40px rgba(255, 255, 255, 0.02);
+}
+.generic-theme .drawer-icon {
+    color: var(--text-dimmed);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+}
+.generic-theme .contact-links-grid a i {
+    color: var(--text-dimmed);
+}
+.generic-theme .contact-links-grid a:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+}
+

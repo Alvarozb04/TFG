@@ -58,11 +58,69 @@ setTimeout(() => {
 }, 12000);
 
 
+const regionNames = {
+    'path-galicia': 'Galicia',
+    'path-asturias': 'Principado de Asturias',
+    'path-cantabria': 'Cantabria',
+    'path-paisvasco': 'País Vasco',
+    'path-navarra': 'Comunidad Foral de Navarra',
+    'path-aragon': 'Aragón',
+    'path-cataluna': 'Cataluña',
+    'path-castillaleon': 'Castilla y León',
+    'path-extremadura': 'Extremadura',
+    'path-castillalamancha': 'Castilla-La Mancha',
+    'path-valencia': 'Comunidad Valenciana',
+    'path-andalucia': 'Andalucía',
+    'path-baleares': 'Islas Baleares',
+    'path-canarias': 'Islas Canarias',
+    'path-rioja': 'La Rioja',
+    'path-ceuta': 'Ceuta',
+    'path-melilla': 'Melilla'
+};
+
+let activeGenericRegionId = null;
+
 // --- REGIONAL DETAILS DRAWERS CONTROLLER ---
 function openDrawer(region) {
     // Close other drawers first
     closeAllDrawers();
     
+    // If it is a generic region (represented by its ID starting with 'path-')
+    if (region.startsWith('path-')) {
+        const name = regionNames[region];
+        const titleEl = document.getElementById('generic-drawer-title');
+        if (titleEl) titleEl.innerText = name;
+        
+        const drawer = document.getElementById('drawer-generic');
+        if (drawer) {
+            drawer.classList.add('open');
+            activeGenericRegionId = region;
+            
+            // Highlight region path/polygon
+            const path = document.getElementById(region);
+            if (path) {
+                path.style.fill = 'rgba(255, 255, 255, 0.15)';
+                path.style.stroke = '#ffffff';
+                path.style.strokeWidth = '2px';
+            }
+            
+            // Stagger entrance of sections inside the drawer
+            gsap.fromTo(drawer.querySelectorAll('.info-section'),
+                { opacity: 0, x: 40 },
+                { 
+                    opacity: 1, 
+                    x: 0, 
+                    duration: 0.55, 
+                    stagger: 0.08, 
+                    ease: 'power2.out', 
+                    delay: 0.25 
+                }
+            );
+        }
+        return;
+    }
+    
+    // Hardcoded regions (madrid, murcia)
     const drawer = document.getElementById(`drawer-${region}`);
     if (drawer) {
         drawer.classList.add('open');
@@ -83,13 +141,30 @@ function openDrawer(region) {
         // Highlight corresponding map path
         const path = document.getElementById(`path-${region}`);
         if (path) {
-            path.style.fill = region === 'madrid' ? 'rgba(157, 78, 221, 0.2)' : 'rgba(0, 240, 255, 0.2)';
+            path.style.fill = region === 'madrid' ? 'rgba(157, 78, 221, 0.18)' : 'rgba(0, 240, 255, 0.18)';
             path.style.strokeWidth = '2.5px';
         }
     }
 }
 
 function closeDrawer(region) {
+    if (region === 'generic' || region.startsWith('path-')) {
+        const drawer = document.getElementById('drawer-generic');
+        if (drawer) {
+            drawer.classList.remove('open');
+            if (activeGenericRegionId) {
+                const path = document.getElementById(activeGenericRegionId);
+                if (path) {
+                    path.style.fill = '';
+                    path.style.stroke = '';
+                    path.style.strokeWidth = '';
+                }
+                activeGenericRegionId = null;
+            }
+        }
+        return;
+    }
+    
     const drawer = document.getElementById(`drawer-${region}`);
     if (drawer) {
         drawer.classList.remove('open');
@@ -106,6 +181,7 @@ function closeDrawer(region) {
 function closeAllDrawers() {
     closeDrawer('madrid');
     closeDrawer('murcia');
+    closeDrawer('generic');
 }
 
 // Bind Close Buttons
@@ -124,7 +200,8 @@ document.addEventListener('click', (e) => {
         const clickedInsideDrawer = activeDrawer.contains(e.target);
         const clickedActiveRegion = e.target.closest('#path-madrid') || 
                                      e.target.closest('#path-murcia') || 
-                                     e.target.closest('.map-marker');
+                                     e.target.closest('.map-marker') ||
+                                     (activeGenericRegionId && e.target.closest(`#${activeGenericRegionId}`));
                                      
         if (!clickedInsideDrawer && !clickedActiveRegion) {
             closeAllDrawers();
@@ -139,17 +216,29 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Bind Map Paths and Markers
+// Bind Map Paths and Interactions
 function bindMapInteractions() {
     const pathMadrid = document.getElementById('path-madrid');
     const markerMadrid = document.getElementById('marker-madrid');
     const pathMurcia = document.getElementById('path-murcia');
     const markerMurcia = document.getElementById('marker-murcia');
 
-    if (pathMadrid) pathMadrid.addEventListener('click', () => openDrawer('madrid'));
-    if (markerMadrid) markerMadrid.addEventListener('click', () => openDrawer('madrid'));
-    if (pathMurcia) pathMurcia.addEventListener('click', () => openDrawer('murcia'));
-    if (markerMurcia) markerMurcia.addEventListener('click', () => openDrawer('murcia'));
+    if (pathMadrid) pathMadrid.addEventListener('click', (e) => { openDrawer('madrid'); e.stopPropagation(); });
+    if (markerMadrid) markerMadrid.addEventListener('click', (e) => { openDrawer('madrid'); e.stopPropagation(); });
+    if (pathMurcia) pathMurcia.addEventListener('click', (e) => { openDrawer('murcia'); e.stopPropagation(); });
+    if (markerMurcia) markerMurcia.addEventListener('click', (e) => { openDrawer('murcia'); e.stopPropagation(); });
+
+    // Bind all generic communities to click events
+    Object.keys(regionNames).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('click', (e) => {
+                openDrawer(id);
+                e.stopPropagation();
+            });
+            el.style.cursor = 'pointer';
+        }
+    });
 }
 
 
