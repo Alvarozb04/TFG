@@ -40,7 +40,10 @@ function transitionToPortfolio() {
 
 // Bind intro termination events
 if (introVideo) {
-    introVideo.addEventListener('ended', transitionToPortfolio);
+    introVideo.addEventListener('ended', () => {
+        // Hold the final frame for 500ms before starting the fade-out transition
+        setTimeout(transitionToPortfolio, 500);
+    });
 }
 if (skipIntroBtn) {
     skipIntroBtn.addEventListener('click', transitionToPortfolio);
@@ -152,12 +155,6 @@ function bindMapInteractions() {
 
 // --- ENTRANCE ANIMATIONS ---
 function triggerEntranceAnimations() {
-    // HUD Panels slide-ins
-    gsap.fromTo('#hud-header', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: 'power3.out' });
-    gsap.fromTo('#hud-projects', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, delay: 0.15, ease: 'power3.out' });
-    gsap.fromTo('#hud-contact', { x: 80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: 'power3.out' });
-    gsap.fromTo('#hud-footer', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, delay: 0.3, ease: 'power3.out' });
-    
     // Map scale/fade in
     gsap.fromTo('.map-container', 
         { scale: 0.85, opacity: 0 }, 
@@ -167,7 +164,7 @@ function triggerEntranceAnimations() {
     // Stagger marker scale-ups
     gsap.fromTo('.map-marker',
         { scale: 0, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.8, stagger: 0.2, delay: 0.6, ease: 'back.out(1.7)' }
+        { scale: 1, opacity: 1, duration: 0.8, stagger: 0.2, delay: 0.4, ease: 'back.out(1.7)' }
     );
 }
 

@@ -141,7 +141,7 @@ body {
 #intro-video {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 #skip-intro-btn {
@@ -195,8 +195,8 @@ body {
 .map-container {
     width: 100%;
     height: 100%;
-    max-width: 900px;
-    max-height: 80vh;
+    max-width: 1100px;
+    max-height: 88vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -725,4 +725,49 @@ svg path:hover {
     #drawer-madrid {
         border-top: 3px solid var(--purple);
     }
+}
+
+/* Contact links inside drawers */
+.drawer-contact-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+}
+.contact-links-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.contact-links-grid a {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-glass);
+    color: var(--text-dimmed);
+    padding: 0.6rem 0.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-align: center;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.contact-links-grid a i {
+    font-size: 0.95rem;
+    color: var(--cyan);
+}
+.contact-links-grid a:hover {
+    color: var(--text-pure);
+    border-color: rgba(0, 240, 255, 0.3);
+    background: rgba(0, 240, 255, 0.04);
+    transform: translateY(-2px);
+}
+.madrid-theme .contact-links-grid a i {
+    color: var(--purple);
+}
+.madrid-theme .contact-links-grid a:hover {
+    border-color: rgba(157, 78, 221, 0.3);
+    background: rgba(157, 78, 221, 0.04);
 }
