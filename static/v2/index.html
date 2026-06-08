@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álvaro Zapata | Next-Gen Cockpit Portfolio</title>
+    
+    <!-- CSS link -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- GSAP for Smooth Micro-Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+    <!-- Space ambiance elements -->
+    <div class="space-orb orb-alpha"></div>
+    <div class="space-orb orb-beta"></div>
+    <div class="space-orb orb-gamma"></div>
+    <div class="cosmic-grid"></div>
+    
+    <!-- Interactive background particles canvas -->
+    <canvas id="particles-bg"></canvas>
+
+    <!-- FLOATING NAVBAR -->
+    <header>
+        <div class="nav-bar">
+            <a href="#home" class="nav-brand">
+                <i class="fa-solid fa-atom nav-brand-icon"></i>
+                <div>
+                    <h1>Álvaro Zapata</h1>
+                    <span>Physics & Quantum Computing</span>
+                </div>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="#profile" class="nav-btn active" id="btn-profile" onclick="switchSection('profile')">
+                    <i class="fa-solid fa-user-astronaut"></i> Profile
+                </a>
+                <a href="#projects" class="nav-btn" id="btn-projects" onclick="switchSection('projects')">
+                    <i class="fa-solid fa-folder-open"></i> Projects
+                </a>
+                <a href="../glicina_interactiva.html" target="_blank" class="nav-btn" style="border-color: rgba(157, 78, 221, 0.2); background: rgba(157, 78, 221, 0.05); color: #fff;">
+                    <i class="fa-solid fa-cube"></i> Glycine 3D Twin
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN COCKPIT DASHBOARD -->
+    <main class="dashboard-container">
+        
+        <!-- SIDEBAR: PROFILE SUMMARY & CV INFO -->
+        <aside class="profile-sidebar">
+            
+            <!-- Profile Avatar panel -->
+            <div class="glass-card profile-avatar-box">
+                <div class="profile-avatar">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <h2 class="profile-name">Álvaro Zapata Beteta</h2>
+                <span class="profile-role">Physics & Quantum Specialist</span>
+            </div>
+            
+            <!-- Contact Details panel -->
+            <div class="glass-card bio-section">
+                <h3><i class="fa-solid fa-address-book"></i> Contact Details</h3>
+                <div class="contact-list">
+                    <a href="mailto:alvarozapatabeteta1@gmail.com" class="contact-item">
+                        <i class="fa-solid fa-envelope"></i> alvarozapatabeteta1@gmail.com
+                    </a>
+                    <a href="tel:+34653988979" class="contact-item">
+                        <i class="fa-solid fa-phone"></i> +34 653 98 89 79
+                    </a>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-location-dot"></i> Madrid, Spain
+                    </div>
+                    <a href="https://www.linkedin.com/in/%C3%A1lvaro-zapata-beteta-0aba75263/" target="_blank" class="contact-item">
+                        <i class="fa-brands fa-linkedin" style="color: #0077b5;"></i> LinkedIn Profile
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Tech Tools panel -->
+            <div class="glass-card bio-section">
+                <h3><i class="fa-solid fa-code"></i> Systems & Tools</h3>
+                <div class="tags-group">
+                    <span class="tag-item">Python</span>
+                    <span class="tag-item">Qiskit</span>
+                    <span class="tag-item">PennyLane</span>
+                    <span class="tag-item">R</span>
+                    <span class="tag-item">SQL</span>
+                    <span class="tag-item">LaTeX</span>
+                    <span class="tag-item">Power BI</span>
+                    <span class="tag-item">Zemax OpticStudio</span>
+                    <span class="tag-item">Advanced Excel</span>
+                </div>
+            </div>
+
+            <!-- Languages -->
+            <div class="glass-card bio-section">
+                <h3><i class="fa-solid fa-language"></i> Languages</h3>
+                <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-weight: 600; color: #fff;">English:</span>
+                        <span style="color: var(--cyan);">Advanced (C1)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-weight: 600; color: #fff;">Spanish:</span>
+                        <span style="color: var(--text-dimmed);">Native</span>
+                    </div>
+                </div>
+            </div>
+            
+        </aside>
+
+        <!-- DASHBOARD BODY: TIMELINES & PORTFOLIO DECK -->
+        <section class="main-content-area">
+            
+            <!-- Profile Tab Section -->
+            <div class="main-dashboard-grid tab-section active" id="sec-profile">
+                
+                <!-- Headline Banner -->
+                <div class="glass-card welcome-banner">
+                    <h2>Welcome to the Quantum Cockpit</h2>
+                    <p>
+                        Physics and Data Analytics student specializing in Quantum Physics and Quantum Computing (QC), currently developing my Bachelor's Thesis on QC. Strong analytical skills and a results-oriented mindset. Proven experience in leading university communities and managing groups. Passionate about solving complex problems, seeking to contribute programming skills and a proactive work ethic to technological innovation environments.
+                    </p>
+                </div>
+
+                <!-- Stats widgets row -->
+                <div class="stats-banner">
+                    <div class="glass-card stat-widget">
+                        <div class="stat-widget-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="stat-widget-data">
+                            <span class="stat-widget-val">4</span>
+                            <span class="stat-widget-lbl">ML & Quant Projects</span>
+                        </div>
+                    </div>
+                    <div class="glass-card stat-widget">
+                        <div class="stat-widget-icon" style="color: var(--purple); filter: drop-shadow(0 0 6px var(--purple-glow));"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div class="stat-widget-data">
+                            <span class="stat-widget-val">TFG</span>
+                            <span class="stat-widget-lbl">Quantum Twin</span>
+                        </div>
+                    </div>
+                    <div class="glass-card stat-widget">
+                        <div class="stat-widget-icon" style="color: var(--orange); filter: drop-shadow(0 0 6px var(--orange-glow));"><i class="fa-solid fa-clock"></i></div>
+                        <div class="stat-widget-data">
+                            <span class="stat-widget-val">C1</span>
+                            <span class="stat-widget-lbl">English Level</span>
+                        </div>
+                    </div>
+                    <div class="glass-card stat-widget">
+                        <div class="stat-widget-icon" style="color: var(--green); filter: drop-shadow(0 0 6px var(--green-glow));"><i class="fa-solid fa-square-poll-vertical"></i></div>
+                        <div class="stat-widget-data">
+                            <span class="stat-widget-val">94.2%</span>
+                            <span class="stat-widget-lbl">CNN Area AUC</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timelines row -->
+                <div class="dashboard-row">
+                    
+                    <!-- Experience panel -->
+                    <div class="glass-card row-panel">
+                        <h3><i class="fa-solid fa-briefcase"></i> Experience</h3>
+                        <div class="timeline-flow">
+                            <!-- ITEM 1 -->
+                            <div class="timeline-card active">
+                                <div class="timeline-card-header">
+                                    <h4>Optical Engineering Intern</h4>
+                                    <span>2026</span>
+                                </div>
+                                <div class="timeline-card-subtitle">Visual Road (May 2026 - June 2026)</div>
+                                <div class="timeline-card-body">
+                                    <ul>
+                                        <li>Researched and developed windshield projection methods (HUDs) applied to the automotive industry.</li>
+                                        <li>Developed hands-on knowledge in standard optical design software, acquiring extensive experience in the use of <strong>Zemax OpticStudio (Ansys)</strong>.</li>
+                                        <li>Communicated effectively across various projects and cross-functional teams, expanding technical workflows from materials science to physical optics.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- ITEM 2 -->
+                            <div class="timeline-card">
+                                <div class="timeline-card-header">
+                                    <h4>Co-founder & Manager</h4>
+                                    <span>2022 - Present</span>
+                                </div>
+                                <div class="timeline-card-subtitle">UAX Chess Club</div>
+                                <div class="timeline-card-body">
+                                    <ul>
+                                        <li>Co-founded and structured the first official chess club at Universidad Alfonso X el Sabio from scratch, generating an active student community.</li>
+                                        <li>Organized tournaments and academic events, managing logistics and promotion to sustain robust student participation.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Education panel -->
+                    <div class="glass-card row-panel">
+                        <h3><i class="fa-solid fa-graduation-cap"></i> Education & Courses</h3>
+                        <div class="timeline-flow">
+                            <!-- ITEM 1 -->
+                            <div class="timeline-card active">
+                                <div class="timeline-card-header">
+                                    <h4>Bachelor's Degree in Physics</h4>
+                                    <span>Graduation 2026</span>
+                                </div>
+                                <div class="timeline-card-subtitle">Universidad Alfonso X el Sabio (UAX)</div>
+                                <div class="timeline-card-body">
+                                    Specialized in Quantum Physics and Quantum Computing. Graduation Thesis (TFG) developed on the electronic structure simulation of glycine using spin symmetry-conserving methods. Served as Student Class Representative.
+                                </div>
+                            </div>
+                            <!-- ITEM 2 -->
+                            <div class="timeline-card">
+                                <div class="timeline-card-header">
+                                    <h4>Innovation School & Data Analytics</h4>
+                                    <span>2024 - 2025</span>
+                                </div>
+                                <div class="timeline-card-subtitle">Avanade & Ironhack</div>
+                                <div class="timeline-card-body">
+                                    Completed specialized courses: **UAX-Avanade Innovation School** (Avanade, 2025) and **UAX Fundamentals of Data Analytics** (Ironhack-UAX, 2024) establishing a strong data science background.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <!-- Projects Tab Section -->
+            <div class="main-dashboard-grid tab-section" id="sec-projects" style="display: none;">
+                
+                <!-- Filter bar row -->
+                <div class="section-header-row">
+                    <h3><i class="fa-solid fa-diagram-project"></i> Dynamic Project Deck</h3>
+                    
+                    <div class="filter-controls">
+                        <button class="filter-btn active" onclick="filterDeck('all')">All</button>
+                        <button class="filter-btn" onclick="filterDeck('physics')">Quantum & Physics</button>
+                        <button class="filter-btn" onclick="filterDeck('ml')">Machine Learning</button>
+                        <button class="filter-btn" onclick="filterDeck('finance')">Quantitative Finance</button>
+                    </div>
+                </div>
+                
+                <!-- Projects Deck -->
+                <div class="projects-deck">
+                    
+                    <!-- CARD 1: GLYCINE -->
+                    <div class="glass-card project-deck-card" data-category="physics">
+                        <div class="deck-card-top">
+                            <div class="deck-card-meta">
+                                <span class="category-tag physics">Quantum Physics</span>
+                                <span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Complete</span>
+                            </div>
+                            <h4 class="deck-card-title">Quantum Digital Twin of Glycine</h4>
+                            <p class="deck-card-desc">
+                                Development of a three-dimensional quantum digital twin of the glycine molecule (C₂H₅NO₂) simulated under Variational Quantum Eigensolver (**VQE**) algorithms. The model simulates a **CAS(10,10)** active space in **20 qubits** utilizing the fermionic-inspired **cfSim** ansatz to ensure particle number and spin parity conservation.
+                            </p>
+                        </div>
+                        <div class="deck-card-action-box">
+                            <a href="../glicina_interactiva.html" target="_blank" class="action-link">
+                                Launch 3D Space <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                            <span class="action-spec">VQE / 20 Qubits</span>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: DERMOSCAN-CNN -->
+                    <div class="glass-card project-deck-card" data-category="ml">
+                        <div class="deck-card-top">
+                            <div class="deck-card-meta">
+                                <span class="category-tag ml">Machine Learning</span>
+                                <span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Complete</span>
+                            </div>
+                            <h4 class="deck-card-title">DermoScan-CNN: Melanoma Classifier</h4>
+                            <p class="deck-card-desc">
+                                Clinical biopsy analysis using deep convolutional neural networks. Classifies skin lesions as benign/malignant, extracts real-time boundary contiguity/pigment features, filters hair obstructions, and maps attention with Grad-CAM heatmaps.
+                            </p>
+                        </div>
+                        <div class="deck-card-action-box">
+                            <a href="../melanoma_interactivo.html" target="_blank" class="action-link">
+                                Launch Sandbox <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                            <span class="action-spec">PyTorch / Grad-CAM</span>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: GALACTIC OBJECTS CLUSTERING -->
+                    <div class="glass-card project-deck-card" data-category="ml">
+                        <div class="deck-card-top">
+                            <div class="deck-card-meta">
+                                <span class="category-tag ml">Data Science</span>
+                                <span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Complete</span>
+                            </div>
+                            <h4 class="deck-card-title">Clustering of Galactic Objects</h4>
+                            <p class="deck-card-desc">
+                                Unsupervised machine learning classification analyzing 600,000+ stars from the ESA Gaia DR3 space satellite. Features missing data cleanup, dimensional reduction (PCA), density-based DBSCAN clustering, and K-Means segmentation.
+                            </p>
+                        </div>
+                        <div class="deck-card-action-box">
+                            <a href="../galaxias_interactivo.html" target="_blank" class="action-link">
+                                Launch Sandbox <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                            <span class="action-spec">PCA / K-Means / Gaia DR3</span>
+                        </div>
+                    </div>
+
+                    <!-- CARD 4: IBEX-35 STOCK RNN -->
+                    <div class="glass-card project-deck-card" data-category="finance">
+                        <div class="deck-card-top">
+                            <div class="deck-card-meta">
+                                <span class="category-tag finance">Quantitative Finance</span>
+                                <span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Complete</span>
+                            </div>
+                            <h4 class="deck-card-title">IBEX-35 RNN Stock Forecasting</h4>
+                            <p class="deck-card-desc">
+                                Financial forecasting using recurrent neural networks (LSTM & GRU) on historical Spanish stock index records (IBEX-35), detailing backtesting trade yields and volatility matrices.
+                            </p>
+                        </div>
+                        <div class="deck-card-action-box">
+                            <span class="action-link" style="color: var(--text-dark); cursor: default;">
+                                Research Project
+                            </span>
+                            <span class="action-spec">LSTM / GRU / RNN</span>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+            
+        </section>
+        
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>UNIVERSIDAD ALFONSO X EL SABIO (UAX) • 2026</p>
+        <p>Portfolio and Molecular Symmetries Dashboard designed by Álvaro Zapata Beteta.</p>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
