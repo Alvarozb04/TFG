@@ -1,96 +1,187 @@
 // =====================================================================
-// PORTFOLIO V2 JAVASCRIPT: COCKPIT INTERACTION
+// PORTFOLIO V2 JAVASCRIPT: MAP-CENTRIC DASHBOARD LOGIC
 // =====================================================================
 
-// Tab switching logic
-function switchSection(sectionId) {
-    // Hide all tab sections
-    document.querySelectorAll('.tab-section').forEach(section => {
-        section.style.display = 'none';
-        section.classList.remove('active');
-    });
-    
-    // Deactivate all navigation links
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Show selected section
-    const targetSection = document.getElementById(`sec-${sectionId}`);
-    if (targetSection) {
-        targetSection.style.display = 'flex';
-        // Force reflow for transitions
-        void targetSection.offsetWidth;
-        targetSection.classList.add('active');
-        
-        // Use GSAP to animate entry nicely
-        gsap.fromTo(targetSection, 
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
-        );
-    }
-    
-    // Activate target navigation button
-    const targetBtn = document.getElementById(`btn-${sectionId}`);
-    if (targetBtn) {
-        targetBtn.classList.add('active');
-    }
-}
+// --- INTRO SCREEN TRANSITION SYSTEM ---
+const introOverlay = document.getElementById('intro-overlay');
+const introVideo = document.getElementById('intro-video');
+const skipIntroBtn = document.getElementById('skip-intro-btn');
+const portfolioViewport = document.getElementById('portfolio-viewport');
 
-// Project Deck Filter System
-function filterDeck(category) {
-    // Update active state on filter buttons
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
+function transitionToPortfolio() {
+    // Prevent duplicate triggers
+    if (introOverlay.style.display === 'none') return;
     
-    // Highlight the pressed button
-    const eventTarget = window.event ? window.event.currentTarget : null;
-    if (eventTarget) {
-        eventTarget.classList.add('active');
-    }
+    // Pause video to save CPU/resources
+    introVideo.pause();
     
-    const cards = document.querySelectorAll('.project-deck-card');
-    
-    // Animate card exits
-    gsap.to(cards, {
+    // Fade out overlay
+    gsap.to(introOverlay, {
         opacity: 0,
-        scale: 0.95,
-        duration: 0.25,
-        stagger: 0.03,
+        duration: 0.8,
+        ease: 'power2.inOut',
         onComplete: () => {
-            cards.forEach(card => {
-                const cardCat = card.getAttribute('data-category');
-                if (category === 'all' || cardCat === category) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
+            introOverlay.style.display = 'none';
+            
+            // Reveal portfolio
+            portfolioViewport.style.display = 'block';
+            gsap.fromTo(portfolioViewport, 
+                { opacity: 0 },
+                { 
+                    opacity: 1, 
+                    duration: 1.0, 
+                    ease: 'power2.out',
+                    onComplete: triggerEntranceAnimations
                 }
-            });
-            
-            // Filter only visible cards for entrance animation
-            const visibleCards = Array.from(cards).filter(c => c.style.display !== 'none');
-            
-            // Animate card entries
-            gsap.fromTo(visibleCards, 
-                { opacity: 0, scale: 0.95 },
-                { opacity: 1, scale: 1, duration: 0.45, stagger: 0.05, ease: 'power2.out' }
             );
         }
     });
 }
+
+// Bind intro termination events
+if (introVideo) {
+    introVideo.addEventListener('ended', transitionToPortfolio);
+}
+if (skipIntroBtn) {
+    skipIntroBtn.addEventListener('click', transitionToPortfolio);
+}
+
+// Fallback in case autoplay is blocked or video fails to load
+setTimeout(() => {
+    if (introOverlay && introOverlay.style.display !== 'none') {
+        // If still showing intro overlay after 12 seconds, auto skip
+        transitionToPortfolio();
+    }
+}, 12000);
+
+
+// --- REGIONAL DETAILS DRAWERS CONTROLLER ---
+function openDrawer(region) {
+    // Close other drawers first
+    closeAllDrawers();
+    
+    const drawer = document.getElementById(`drawer-${region}`);
+    if (drawer) {
+        drawer.classList.add('open');
+        
+        // Stagger entrance of sections inside the drawer
+        gsap.fromTo(drawer.querySelectorAll('.info-section'),
+            { opacity: 0, x: 40 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 0.55, 
+                stagger: 0.08, 
+                ease: 'power2.out', 
+                delay: 0.25 
+            }
+        );
+        
+        // Highlight corresponding map path
+        const path = document.getElementById(`path-${region}`);
+        if (path) {
+            path.style.fill = region === 'madrid' ? 'rgba(157, 78, 221, 0.2)' : 'rgba(0, 240, 255, 0.2)';
+            path.style.strokeWidth = '2.5px';
+        }
+    }
+}
+
+function closeDrawer(region) {
+    const drawer = document.getElementById(`drawer-${region}`);
+    if (drawer) {
+        drawer.classList.remove('open');
+        
+        // Reset corresponding map path styling
+        const path = document.getElementById(`path-${region}`);
+        if (path) {
+            path.style.fill = '';
+            path.style.strokeWidth = '';
+        }
+    }
+}
+
+function closeAllDrawers() {
+    closeDrawer('madrid');
+    closeDrawer('murcia');
+}
+
+// Bind Close Buttons
+document.querySelectorAll('.close-drawer-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const target = btn.getAttribute('data-target');
+        closeDrawer(target);
+        e.stopPropagation();
+    });
+});
+
+// Click Outside Map regions to close Drawers
+document.addEventListener('click', (e) => {
+    const activeDrawer = document.querySelector('.drawer.open');
+    if (activeDrawer) {
+        const clickedInsideDrawer = activeDrawer.contains(e.target);
+        const clickedActiveRegion = e.target.closest('#path-madrid') || 
+                                     e.target.closest('#path-murcia') || 
+                                     e.target.closest('.map-marker');
+                                     
+        if (!clickedInsideDrawer && !clickedActiveRegion) {
+            closeAllDrawers();
+        }
+    }
+});
+
+// ESC key to close Drawers
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeAllDrawers();
+    }
+});
+
+// Bind Map Paths and Markers
+function bindMapInteractions() {
+    const pathMadrid = document.getElementById('path-madrid');
+    const markerMadrid = document.getElementById('marker-madrid');
+    const pathMurcia = document.getElementById('path-murcia');
+    const markerMurcia = document.getElementById('marker-murcia');
+
+    if (pathMadrid) pathMadrid.addEventListener('click', () => openDrawer('madrid'));
+    if (markerMadrid) markerMadrid.addEventListener('click', () => openDrawer('madrid'));
+    if (pathMurcia) pathMurcia.addEventListener('click', () => openDrawer('murcia'));
+    if (markerMurcia) markerMurcia.addEventListener('click', () => openDrawer('murcia'));
+}
+
+
+// --- ENTRANCE ANIMATIONS ---
+function triggerEntranceAnimations() {
+    // HUD Panels slide-ins
+    gsap.fromTo('#hud-header', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: 'power3.out' });
+    gsap.fromTo('#hud-projects', { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, delay: 0.15, ease: 'power3.out' });
+    gsap.fromTo('#hud-contact', { x: 80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: 'power3.out' });
+    gsap.fromTo('#hud-footer', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, delay: 0.3, ease: 'power3.out' });
+    
+    // Map scale/fade in
+    gsap.fromTo('.map-container', 
+        { scale: 0.85, opacity: 0 }, 
+        { scale: 1, opacity: 1, duration: 1.2, ease: 'power2.out' }
+    );
+    
+    // Stagger marker scale-ups
+    gsap.fromTo('.map-marker',
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.8, stagger: 0.2, delay: 0.6, ease: 'back.out(1.7)' }
+    );
+}
+
 
 // --- OPTIMIZED PARTICLE BACKGROUND CONTROLLER ---
 const canvas = document.getElementById('particles-bg');
 const ctx = canvas.getContext('2d');
 
 let particles = [];
-const particleCount = 65;
+const particleCount = 70;
 let width = window.innerWidth;
 let height = window.innerHeight;
 
-// Mouse coordinates tracker for subtle attraction
-const mouse = { x: null, y: null, radius: 140 };
+const mouse = { x: null, y: null, radius: 150 };
 
 window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
@@ -115,7 +206,7 @@ resizeCanvas();
 class Particle {
     constructor() {
         this.reset();
-        this.y = Math.random() * height; // Distribute vertically at start
+        this.y = Math.random() * height; // Distribute vertically on initial load
     }
     
     reset() {
@@ -123,7 +214,7 @@ class Particle {
         this.y = height + 10;
         this.size = Math.random() * 1.5 + 0.5;
         this.speedX = Math.random() * 0.4 - 0.2;
-        this.speedY = -(Math.random() * 0.5 + 0.15); // Flow upwards
+        this.speedY = -(Math.random() * 0.5 + 0.15); // Upward drift
         this.opacity = Math.random() * 0.5 + 0.15;
     }
     
@@ -131,7 +222,7 @@ class Particle {
         this.x += this.speedX;
         this.y += this.speedY;
         
-        // Interaction with mouse attraction
+        // Mouse interactive drift
         if (mouse.x && mouse.y) {
             const dx = mouse.x - this.x;
             const dy = mouse.y - this.y;
@@ -143,7 +234,7 @@ class Particle {
             }
         }
         
-        // Reset if particle moves out of viewport
+        // Reset off-screen particles
         if (this.y < -10 || this.x < -10 || this.x > width + 10) {
             this.reset();
         }
@@ -175,15 +266,12 @@ function animateParticles() {
     requestAnimationFrame(animateParticles);
 }
 
-// Initialize on page load
+
+// --- INITIALIZE APPLICATION ---
 function init() {
     initParticles();
     animateParticles();
-    
-    // Initial entrance animations
-    gsap.from('.nav-bar', { y: -50, opacity: 0, duration: 1.0, ease: 'power3.out' });
-    gsap.from('.profile-sidebar', { x: -50, opacity: 0, duration: 1.0, delay: 0.2, ease: 'power3.out' });
-    gsap.from('.main-content-area', { x: 50, opacity: 0, duration: 1.0, delay: 0.2, ease: 'power3.out' });
+    bindMapInteractions();
 }
 
 window.onload = init;
